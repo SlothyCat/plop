@@ -1,0 +1,75 @@
+## ---------------------------------------------------------------------------
+## Secrets — keep credentials OUT of the repo (esp. Google OAuth client config).
+## Commit a *.example version with placeholder values so the setup is visible.
+## ---------------------------------------------------------------------------
+Secrets.xcconfig
+*.secret.xcconfig
+.env
+.env.*
+!.env.example
+GoogleService-Info.plist
+# Local Claude Code machine-specific settings (may hold tokens/paths)
+.claude/settings.local.json
+
+## ---------------------------------------------------------------------------
+## Xcode user-specific & build artifacts
+## ---------------------------------------------------------------------------
+# Build generated
+build/
+DerivedData/
+
+# Various per-user settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+
+# Xcode 8+ device/scheme management noise
+*.xcscmblueprint
+*.xccheckout
+
+# Other build/index artifacts
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Playground
+timeline.xctimeline
+playground.xcworkspace
+
+## ---------------------------------------------------------------------------
+## Swift Package Manager
+## ---------------------------------------------------------------------------
+.build/
+# Keep Package.resolved committed for reproducible CI builds — do NOT ignore it.
+# (If this were a library you might ignore it; for an app, commit it.)
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+## ---------------------------------------------------------------------------
+## CocoaPods / Carthage — not used (SwiftPM), but ignored in case anything appears
+## ---------------------------------------------------------------------------
+Pods/
+Carthage/Build/
+
+## ---------------------------------------------------------------------------
+## Fastlane (if you add it later for App Store automation)
+## ---------------------------------------------------------------------------
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+## ---------------------------------------------------------------------------
+## macOS
+## ---------------------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*

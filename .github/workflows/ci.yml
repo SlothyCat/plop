@@ -1,0 +1,115 @@
+name: CI
+
+# Run on pull requests targeting main (the merge gate) and on direct pushes to
+# main (so the badge on your default branch stays accurate).
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# If you push twice quickly to the same PR, cancel the older run so you're not
+# burning a runner on a stale commit.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Lint runs on a cheap Linux container (no Xcode/simulator needed) in parallel
+  # with the build, so style feedback lands fast and doesn't burn macOS minutes.
+  lint:
+    name: SwiftLint
+    runs-on: ubuntu-latest
+    container: ghcr.io/realm/swiftlint:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Reads .swiftlint.yml from the repo root automatically.
+      # No --strict: warnings stay warnings (matching the flexible config);
+      # only error-level violations fail the job.
+      - name: SwiftLint
+        run: swiftlint lint --reporter github-actions-logging
+
+  test:
+    name: Build & Test
+    runs-on: macos-15   # macOS Sequoia image; ships with recent Xcode + iOS 18 simulators
+
+    env:
+      # The .xcodeproj lives in the plop/ subdirectory, not the repo root.
+      # If you use an .xcworkspace (e.g. SPM/CocoaPods integration), set WORKSPACE instead.
+      PROJECT: plop/plop.xcodeproj
+      WORKSPACE: ""
+      SCHEME: plop
+      # Pin a simulator so builds are deterministic. Deployment target is iOS 18.0,
+      # so any installed runtime >= 18 is valid; this just picks one concrete device.
+      DESTINATION: "platform=iOS Simulator,name=iPhone 16,OS=18.2"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Pin the Xcode version explicitly rather than relying on the image default,
+      # so a runner image update doesn't silently change your toolchain.
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+
+      - name: Show versions
+        run: |
+          xcodebuild -version
+          xcrun simctl list runtimes
+
+      # Cache derived data / SPM dependencies to speed up later runs.
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+
+      - name: Build & test
+        run: |
+          if [ -n "$WORKSPACE" ]; then
+            CONTAINER_FLAG=(-workspace "$WORKSPACE")
+          else
+            CONTAINER_FLAG=(-project "$PROJECT")
+          fi
+
+          set -o pipefail
+          xcodebuild test \
+            "${CONTAINER_FLAG[@]}" \
+            -scheme "$SCHEME" \
+            -destination "$DESTINATION" \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcbeautify
+
+      # Convert Xcode's .xcresult coverage into the Cobertura XML that Codecov reads.
+      # xcresultparser is the lightweight tool for this; no Ruby/Slather needed.
+      - name: Export coverage
+        if: ${{ !cancelled() }}
+        run: |
+          brew install xcresultparser
+          xcresultparser --output-format cobertura TestResults.xcresult > coverage.xml
+
+      - name: Upload coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false   # don't fail the build just because the upload hiccuped
+          # No token needed for a PUBLIC repo. If you ever make the repo private,
+          # add a CODECOV_TOKEN secret and pass: token: ${{ secrets.CODECOV_TOKEN }}
+
+      # Keep the raw result bundle as an artifact so you can open failures in Xcode.
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults.xcresult
+          retention-days: 7
