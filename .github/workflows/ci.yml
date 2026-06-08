@@ -41,9 +41,11 @@ jobs:
       PROJECT: plop/plop.xcodeproj
       WORKSPACE: ""
       SCHEME: plop
-      # Pin a simulator so builds are deterministic. Deployment target is iOS 18.0,
-      # so any installed runtime >= 18 is valid; this just picks one concrete device.
-      DESTINATION: "platform=iOS Simulator,name=iPhone 16,OS=18.2"
+      # OS=latest avoids pinning an exact runtime: GitHub rotates simulator
+      # runtimes in/out of the runner image over time, so a hard pin (e.g. 18.2)
+      # eventually fails with "Unable to find a device matching...". Deployment
+      # target is iOS 18.0, so testing on whatever current iOS the runner has is valid.
+      DESTINATION: "platform=iOS Simulator,name=iPhone 16,OS=latest"
 
     steps:
       - name: Checkout
