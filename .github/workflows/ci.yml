@@ -51,10 +51,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Pin the Xcode version explicitly rather than relying on the image default,
-      # so a runner image update doesn't silently change your toolchain.
+      # Select the NEWEST Xcode installed on the runner. This must stay aligned with
+      # the DESTINATION's OS=latest: an old pinned Xcode (e.g. 16.2) cannot drive a
+      # newer simulator runtime (e.g. iOS 26), which fails with exit code 70. Picking
+      # the latest Xcode keeps the toolchain and the latest runtime in lockstep.
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+        run: |
+          LATEST_XCODE="$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)"
+          if [ -z "$LATEST_XCODE" ]; then
+            echo "No version-suffixed Xcode found; using the runner default."
+          else
+            echo "Selecting newest Xcode: $LATEST_XCODE"
+            sudo xcode-select -s "$LATEST_XCODE"
+          fi
+          xcodebuild -version
 
       - name: Show versions
         run: |
