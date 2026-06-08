@@ -41,9 +41,8 @@ jobs:
       PROJECT: plop/plop.xcodeproj
       WORKSPACE: ""
       SCHEME: plop
-      # Pin a simulator so builds are deterministic. Deployment target is iOS 18.0,
-      # so any installed runtime >= 18 is valid; this just picks one concrete device.
-      DESTINATION: "platform=iOS Simulator,name=iPhone 16,OS=18.2"
+      # Pin a simulator model but let Xcode pick the installed runtime version.
+      DESTINATION: "platform=iOS Simulator,name=iPhone 16,OS=latest"
 
     steps:
       - name: Checkout
