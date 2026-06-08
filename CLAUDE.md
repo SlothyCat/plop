@@ -89,7 +89,7 @@ dialogs.**
 ```bash
 # Run tests. The .xcodeproj is in the plop/ subdirectory, so -project is required
 # when running from the repo root. No OS is pinned so xcodebuild picks an installed
-# iPhone 16 runtime (CI pins OS=18.2 explicitly for determinism).
+# iPhone 16 runtime (CI uses OS=latest for runner compatibility).
 xcodebuild test -project plop/plop.xcodeproj -scheme plop \
   -destination 'platform=iOS Simulator,name=iPhone 16'
 
