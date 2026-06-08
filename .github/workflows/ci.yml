@@ -81,10 +81,16 @@ jobs:
           fi
 
           set -o pipefail
+          # -only-testing:plopTests runs just the unit tests. The UI test targets
+          # (plopUITests/...) boot the simulator and launch the app, which is slow
+          # and flaky in CI — and per CLAUDE.md, views are validated via #Preview /
+          # the simulator, not automated UI tests. Drop this flag if you ever want
+          # UI tests in CI.
           xcodebuild test \
             "${CONTAINER_FLAG[@]}" \
             -scheme "$SCHEME" \
             -destination "$DESTINATION" \
+            -only-testing:plopTests \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO \
