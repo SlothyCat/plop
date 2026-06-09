@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>plop — logo</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #ECEEF1; }
+  * { box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap');
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+// ── palette (from the app) ────────────────────────────────────────────────
+const SKY_T = '#A8D3F2', SKY_B = '#7EB7E8', SKY_DEEP = '#5C9FD8';
+const CREAM = '#FFE3B0', CREAM_RING = '#F2CE92', CREAM_HI = '#FFF1D4';
+const YELLOW = '#FFCE73', INK = '#5A4632', WHITE = '#FFFFFF';
+
+function AppIcon({ size = 212, children }) {
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: size * 0.2237, overflow: 'hidden',
+      boxShadow: '0 14px 30px rgba(40,70,110,0.20), 0 3px 8px rgba(40,70,110,0.12), inset 0 1.2px 0 rgba(255,255,255,0.55)',
+    }}>
+      <svg viewBox="0 0 100 100" width={size} height={size} style={{ display: 'block' }}>{children}</svg>
+    </div>
+  );
+}
+
+const SkyBG = ({ id, t = SKY_T, b = SKY_B }) => (
+  <React.Fragment>
+    <defs>
+      <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor={t} /><stop offset="1" stopColor={b} />
+      </linearGradient>
+    </defs>
+    <rect width="100" height="100" fill={`url(#${id})`} />
+  </React.Fragment>
+);
+
+// A coin (face-on), optional smile
+function Coin({ cx, cy, r, smile }) {
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={r} fill={CREAM} />
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={CREAM_RING} strokeWidth={r * 0.07} />
+      <circle cx={cx} cy={cy} r={r * 0.78} fill="none" stroke={CREAM_HI} strokeWidth={r * 0.08} />
+      {smile && (
+        <g>
+          <circle cx={cx - r * 0.32} cy={cy - r * 0.12} r={r * 0.1} fill={INK} />
+          <circle cx={cx + r * 0.32} cy={cy - r * 0.12} r={r * 0.1} fill={INK} />
+          <path d={`M${cx - r * 0.34} ${cy + r * 0.22} Q${cx} ${cy + r * 0.6} ${cx + r * 0.34} ${cy + r * 0.22}`}
+            fill="none" stroke={INK} strokeWidth={r * 0.11} strokeLinecap="round" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+// ── A · Coin + ripples (the literal plop) ─────────────────────────────────
+const PlopRipples = () => (
+  <AppIcon>
+    <SkyBG id="rA" />
+    <g stroke={WHITE} fill="none" strokeLinecap="round">
+      <ellipse cx="50" cy="70" rx="30" ry="9" strokeWidth="2.4" opacity="0.35" />
+      <ellipse cx="50" cy="70" rx="20" ry="6" strokeWidth="2.6" opacity="0.6" />
+      <ellipse cx="50" cy="70" rx="11" ry="3.4" strokeWidth="2.8" opacity="0.9" />
+    </g>
+    <Coin cx={50} cy={36} r={16} smile />
+    <circle cx="38" cy="64" r="1.7" fill={WHITE} opacity="0.85" />
+    <circle cx="63" cy="62" r="1.3" fill={WHITE} opacity="0.7" />
+  </AppIcon>
+);
+
+// ── B · Single bold drop-ring (minimal) ───────────────────────────────────
+const PlopMinimal = () => (
+  <AppIcon>
+    <SkyBG id="rB" />
+    <ellipse cx="50" cy="62" rx="26" ry="8.5" fill="none" stroke={WHITE} strokeWidth="3" opacity="0.45" />
+    <ellipse cx="50" cy="62" rx="15" ry="5" fill="none" stroke={WHITE} strokeWidth="3.4" opacity="0.85" />
+    <Coin cx={50} cy={40} r={18} />
+  </AppIcon>
+);
+
+// ── C · The 'o' is the coin (wordmark-in-icon) ────────────────────────────
+const PlopMono = () => (
+  <AppIcon>
+    <SkyBG id="rC" t="#FFE9C2" b="#FFD98C" />
+    <g fill="none" stroke="#E9B765" strokeLinecap="round">
+      <ellipse cx="50" cy="74" rx="24" ry="6.5" strokeWidth="2.2" opacity="0.5" />
+      <ellipse cx="50" cy="74" rx="14" ry="3.8" strokeWidth="2.4" opacity="0.8" />
+    </g>
+    <text x="50" y="56" textAnchor="middle" fontFamily="'Baloo 2', sans-serif" fontWeight="800"
+      fontSize="40" fill={SKY_DEEP} letterSpacing="-1">plop</text>
+  </AppIcon>
+);
+
+// ── D · Splash crown ──────────────────────────────────────────────────────
+const PlopSplash = () => (
+  <AppIcon>
+    <SkyBG id="rD" />
+    <ellipse cx="50" cy="66" rx="27" ry="8" fill="none" stroke={WHITE} strokeWidth="2.4" opacity="0.4" />
+    <ellipse cx="50" cy="66" rx="16" ry="4.6" fill="none" stroke={WHITE} strokeWidth="2.8" opacity="0.75" />
+    <g fill={WHITE}>
+      <circle cx="34" cy="50" r="2.6" />
+      <circle cx="66" cy="50" r="2.6" />
+      <circle cx="28" cy="58" r="1.7" opacity="0.8" />
+      <circle cx="72" cy="58" r="1.7" opacity="0.8" />
+    </g>
+    <Coin cx={50} cy={40} r={15} smile />
+  </AppIcon>
+);
+
+// ── wordmark ──────────────────────────────────────────────────────────────
+function Wordmark({ withDot = true }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Baloo 2', sans-serif", fontWeight: 800, fontSize: 86, color: SKY_DEEP, letterSpacing: -2, lineHeight: 1 }}>
+      <span>pl</span>
+      <span style={{ position: 'relative', display: 'inline-block' }}>
+        <span style={{ color: '#E7AE52' }}>o</span>
+      </span>
+      <span>p</span>
+    </div>
+  );
+}
+
+function IconFrame({ Icon, label }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '30px 24px 26px' }}>
+      <Icon />
+      <div style={{ fontFamily: "'Baloo 2', sans-serif", fontWeight: 700, fontSize: 17, color: '#2C3440' }}>{label}</div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection id="icon" title="plop · app icon" subtitle="A coin dropping into water — sky-blue + cream">
+        <DCArtboard id="ripples" label="A · Coin + ripples" width={280} height={332}>
+          <IconFrame Icon={PlopRipples} label="The plop" />
+        </DCArtboard>
+        <DCArtboard id="minimal" label="B · Minimal drop" width={280} height={332}>
+          <IconFrame Icon={PlopMinimal} label="Calm & clean" />
+        </DCArtboard>
+        <DCArtboard id="splash" label="C · Splash" width={280} height={332}>
+          <IconFrame Icon={PlopSplash} label="Bit of bounce" />
+        </DCArtboard>
+        <DCArtboard id="mono" label="D · Wordmark coin" width={280} height={332}>
+          <IconFrame Icon={PlopMono} label="‘o’ is the coin" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="lockup" title="Wordmark + lockup" subtitle="Baloo 2 · rounded, friendly">
+        <DCArtboard id="word" label="Wordmark" width={420} height={200}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <Wordmark />
+          </div>
+        </DCArtboard>
+        <DCArtboard id="lock" label="Horizontal lockup" width={520} height={200}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24, height: '100%' }}>
+            <PlopRipples size={104} />
+            <Wordmark />
+          </div>
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
