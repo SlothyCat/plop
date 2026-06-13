@@ -4,6 +4,7 @@ import SwiftUI
 /// note-or-time, and the signed amount.
 struct TxRow: View {
     let transaction: Transaction
+    var onTap: () -> Void = {}
 
     var body: some View {
         let amount = signedAmount(transaction)
@@ -32,6 +33,8 @@ struct TxRow: View {
                 .foregroundStyle(amount > 0 ? Palette.incomeGreen : Palette.ink)
         }
         .padding(.vertical, 11)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onTap)
     }
 
     private var tile: some View {

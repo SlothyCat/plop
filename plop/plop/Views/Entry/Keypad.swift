@@ -30,6 +30,7 @@ struct Keypad: View {
                 .foregroundStyle(Palette.ink)
                 .shadow(color: Palette.ink.opacity(0.05), radius: 2, y: 1)
         }
+        .accessibilityIdentifier("key-\(label)")
     }
 
     private var confirmKey: some View {
@@ -43,5 +44,6 @@ struct Keypad: View {
                 .opacity(canConfirm ? 1 : 0.4)
         }
         .disabled(!canConfirm)
+        .accessibilityIdentifier("key-confirm")
     }
 }

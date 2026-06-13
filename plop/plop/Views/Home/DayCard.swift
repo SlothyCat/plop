@@ -4,6 +4,7 @@ import SwiftUI
 /// Days are separated by the cards + spacing (no rule between groups).
 struct DayCard: View {
     let group: DayGroup
+    var onSelect: (Transaction) -> Void = { _ in }
 
     var body: some View {
         VStack(spacing: 4) {
@@ -26,7 +27,7 @@ struct DayCard: View {
                             .frame(height: 1)
                             .padding(.leading, 60)
                     }
-                    TxRow(transaction: tx)
+                    TxRow(transaction: tx, onTap: { onSelect(tx) })
                 }
             }
             .padding(.horizontal, 16)
