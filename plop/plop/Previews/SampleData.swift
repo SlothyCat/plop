@@ -1,9 +1,27 @@
 #if DEBUG
 import Foundation
+import SwiftData
 
 /// Sample fixtures for #Preview canvases only (excluded from release via #if DEBUG).
 /// Dates are relative to "now" so they always fall inside the current week/month.
 enum SampleData {
+    /// In-memory container pre-seeded with sample transactions, for @Query previews.
+    @MainActor
+    static func previewContainer() -> ModelContainer {
+        do {
+            let container = try ModelContainer(
+                for: Transaction.self, ExpenseCategory.self,
+                configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            )
+            for tx in transactions() {
+                container.mainContext.insert(tx)
+            }
+            return container
+        } catch {
+            fatalError("Failed to build preview container: \(error)")
+        }
+    }
+
     static func categories() -> [ExpenseCategory] {
         [
             ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC"),
