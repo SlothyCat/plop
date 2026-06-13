@@ -23,6 +23,7 @@ struct CategoryPickerSheet: View {
                         selected = category
                         onDismiss()
                     } label: { tile(category) }
+                    .accessibilityIdentifier("category-\(category.name)")
                 }
             }
             Spacer(minLength: 0)

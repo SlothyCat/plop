@@ -149,6 +149,7 @@ struct EntryView: View {
                 .background(selected.map { Color(hex: $0.colorHex) } ?? Palette.card, in: Capsule())
                 .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
             }
+            .accessibilityIdentifier("categoryButton")
         }
         .padding(.horizontal, 18)
         .padding(.bottom, 14)
@@ -157,15 +158,18 @@ struct EntryView: View {
     // MARK: keypad
 
     private var keypad: some View {
-        Keypad(onKey: { input.press($0) }, onConfirm: confirm, canConfirm: input.canSave)
+        Keypad(onKey: { input.press($0) }, onConfirm: confirm, canConfirm: canSave)
             .padding(.horizontal, 18)
             .padding(.bottom, 30)
     }
 
     // MARK: actions / helpers
 
+    /// A transaction needs a positive amount AND a category.
+    private var canSave: Bool { input.canSave && selected != nil }
+
     private func confirm() {
-        guard input.canSave else { return }
+        guard canSave else { return }
         let draft = TransactionDraft(amount: input.value, type: mode, date: date,
                                      note: note.trimmingCharacters(in: .whitespaces),
                                      recurrence: recurrence, category: selected)
