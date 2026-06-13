@@ -14,7 +14,8 @@ Design source of truth: `design_handoff_plop/README.md` and the prototype under
 
 ## In scope
 
-- SwiftData model: `Transaction`, `Category`, supporting enums.
+- SwiftData model: `Transaction`, `ExpenseCategory` (named to avoid the Objective-C
+  runtime's `Category` type), supporting enums.
 - Pure, unit-tested logic: period filtering, aggregation (net total, day-grouping),
   formatting (money, day labels).
 - Centralized write path (`TransactionActions`) for add/update/delete.
@@ -38,9 +39,11 @@ Design source of truth: `design_handoff_plop/README.md` and the prototype under
 ## Key decisions (with rationale)
 
 1. **Category is a SwiftData relationship**, not a denormalized name string.
-   `Transaction.category: Category?`. Renames propagate; color/icon/budget live in
-   one place. Delete rule = **nullify** → a removed category leaves the transaction
-   as "Uncategorized" (matches the design's fallback).
+   `Transaction.category: ExpenseCategory?` (the model is named `ExpenseCategory` to
+   avoid the ObjC runtime's `Category`). Renames propagate; color/icon/budget live in
+   one place. Delete rule = **nullify** (inverse inferred from `Transaction.category`;
+   an explicit inverse keypath traps SwiftData) → a removed category leaves the
+   transaction as "Uncategorized" (matches the design's fallback).
 2. **Amount stored as `Decimal`, always positive**; sign derived from `type`
    (income +, expense −). Never `Double` (floating-point corrupts money).
 3. **Money formatting uses the device locale currency** (`Locale.current`), no FX

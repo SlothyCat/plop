@@ -21,7 +21,7 @@ that fights `@Query`).
 plop/
   Models/
     Transaction.swift
-    Category.swift
+    ExpenseCategory.swift        (named to avoid the ObjC runtime's `Category`)
     TransactionType.swift        (enum)
     RecurrenceInterval.swift     (enum — stored but inert this feature)
   Logic/                         (pure; no SwiftUI / no ModelContext)
@@ -49,17 +49,22 @@ enum RecurrenceInterval: String, Codable, CaseIterable {
     case none, daily, weekly, monthly, yearly   // stored now; engine = Feature 2
 }
 
+// Named ExpenseCategory, NOT Category: the ObjC runtime exports a `Category` type
+// wherever Foundation is imported, which makes the bare name ambiguous.
 @Model
-final class Category {
+final class ExpenseCategory {
     var name: String
     var symbolName: String        // SF Symbol, e.g. "fork.knife"
     var colorHex: String          // e.g. "#FFEBCC"
-    var budget: Decimal?          // nil now; Budget feature fills it (forward-compat)
+    var budget: Decimal = 0       // 0 = no budget; Budget feature gives meaning later.
+                                  // Non-optional: optional Decimal traps SwiftData.
 
-    @Relationship(deleteRule: .nullify, inverse: \Transaction.category)
+    // Inverse is inferred from Transaction.category; an explicit inverse keypath here
+    // creates a metadata cycle that traps SwiftData at fetch time.
+    @Relationship(deleteRule: .nullify)
     var transactions: [Transaction] = []
 
-    init(name: String, symbolName: String, colorHex: String, budget: Decimal? = nil) {
+    init(name: String, symbolName: String, colorHex: String, budget: Decimal = 0) {
         self.name = name; self.symbolName = symbolName
         self.colorHex = colorHex; self.budget = budget
     }
@@ -73,10 +78,10 @@ final class Transaction {
     var note: String
     var recurrence: RecurrenceInterval
     var createdAt: Date           // stable sort tiebreaker
-    var category: Category?
+    var category: ExpenseCategory?
 
     init(amount: Decimal, type: TransactionType, date: Date, note: String = "",
-         recurrence: RecurrenceInterval = .none, category: Category? = nil) {
+         recurrence: RecurrenceInterval = .none, category: ExpenseCategory? = nil) {
         self.amount = amount; self.type = type; self.date = date; self.note = note
         self.recurrence = recurrence; self.createdAt = .now; self.category = category
     }
@@ -109,7 +114,7 @@ both Home rendering and the PR3 fetch/filter wiring.
 ```swift
 struct TransactionDraft {           // built by Entry from its form state
     var amount: Decimal; var type: TransactionType; var date: Date
-    var note: String; var recurrence: RecurrenceInterval; var category: Category?
+    var note: String; var recurrence: RecurrenceInterval; var category: ExpenseCategory?
 }
 
 enum TransactionActions {
@@ -176,6 +181,8 @@ tab bar. The "+" action and row-tap-to-edit are wired when Entry lands (PRs 4–
 
 - **Unit (XCTest):** `signedAmount`, `netTotal`, `PeriodFilter.range`, `groupByDay`,
   formatting; `TransactionActions` and seeding against an **in-memory `ModelContainer`**.
+  The test helper returns the *container* (not just its context): a `ModelContext`
+  does not strongly retain its container, so an orphaned context traps SwiftData.
 - **`#Preview` + simulator:** Home (render/filter/empty), Entry (keypad/sheets/save),
   light + dark. Previews use `.modelContainer(inMemory: true)` with sample data.
 - No forced SwiftUI view tests (per CLAUDE.md).
