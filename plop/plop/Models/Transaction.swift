@@ -9,14 +9,14 @@ final class Transaction {
     var note: String
     var recurrence: RecurrenceInterval
     var createdAt: Date           // stable sort tiebreaker
-    var category: Category?
+    var category: ExpenseCategory?
 
     init(amount: Decimal,
          type: TransactionType,
          date: Date,
          note: String = "",
          recurrence: RecurrenceInterval = .none,
-         category: Category? = nil) {
+         category: ExpenseCategory? = nil) {
         self.amount = amount
         self.type = type
         self.date = date

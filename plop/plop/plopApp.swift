@@ -13,7 +13,7 @@ struct plopApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Transaction.self,
-            Category.self,
+            ExpenseCategory.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
