@@ -1,0 +1,29 @@
+import SwiftUI
+
+/// Plain RGBA components parsed from a hex string — testable without SwiftUI.
+struct RGBA {
+    let red, green, blue, alpha: Double
+}
+
+extension RGBA {
+    /// Parses "#RRGGBB" (the leading "#" is optional). Invalid input → opaque black.
+    init(hex: String) {
+        var s = hex.trimmingCharacters(in: .whitespaces)
+        if s.hasPrefix("#") { s.removeFirst() }
+        guard s.count == 6, let v = UInt32(s, radix: 16) else {
+            self = RGBA(red: 0, green: 0, blue: 0, alpha: 1)
+            return
+        }
+        self = RGBA(red: Double((v >> 16) & 0xFF) / 255,
+                    green: Double((v >> 8) & 0xFF) / 255,
+                    blue: Double(v & 0xFF) / 255,
+                    alpha: 1)
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let c = RGBA(hex: hex)
+        self = Color(.sRGB, red: c.red, green: c.green, blue: c.blue, opacity: c.alpha)
+    }
+}
