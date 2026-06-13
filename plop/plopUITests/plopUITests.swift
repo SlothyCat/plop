@@ -18,11 +18,13 @@ final class plopUITests: XCTestCase {
         app.buttons["centerButton"].tap()        // open Entry (add mode)
         app.buttons["key-1"].tap()
         app.buttons["key-2"].tap()
-        app.buttons["key-confirm"].tap()         // save a $12 expense, dismiss
+        app.buttons["categoryButton"].tap()      // open the category picker
+        app.buttons["category-Food"].tap()       // pick a seeded category (required)
+        app.buttons["key-confirm"].tap()         // save a $12 Food expense, dismiss
 
-        // Back on Home: the new uncategorized row should show.
+        // Back on Home: the new row should show its category.
         XCTAssertTrue(
-            app.staticTexts["Uncategorized"].waitForExistence(timeout: 5),
+            app.staticTexts["Food"].waitForExistence(timeout: 5),
             "Expected the added transaction to appear on Home"
         )
     }
