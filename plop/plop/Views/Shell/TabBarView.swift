@@ -48,5 +48,6 @@ struct TabBarView: View {
                 .background(Palette.accent, in: RoundedRectangle(cornerRadius: 23, style: .continuous))
                 .shadow(color: Palette.accent.opacity(0.5), radius: 10, y: 3)
         }
+        .accessibilityIdentifier("centerButton")
     }
 }
