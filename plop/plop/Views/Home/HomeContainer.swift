@@ -6,9 +6,13 @@ import SwiftData
 /// When Entry saves a transaction (PR5), @Query updates this automatically.
 struct HomeContainer: View {
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
+    @State private var editingTx: Transaction?
 
     var body: some View {
-        HomeView(transactions: transactions)
+        HomeView(transactions: transactions, onSelect: { editingTx = $0 })
+            .fullScreenCover(item: $editingTx) { tx in
+                EntryView(editing: tx)
+            }
     }
 }
 

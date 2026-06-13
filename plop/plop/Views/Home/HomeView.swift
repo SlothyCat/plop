@@ -4,6 +4,7 @@ import SwiftUI
 /// (previews inject sample data; the app passes [] until PR3 wires @Query).
 struct HomeView: View {
     let transactions: [Transaction]
+    var onSelect: (Transaction) -> Void = { _ in }
     @State private var period: PeriodFilter = .month
 
     var body: some View {
@@ -33,7 +34,7 @@ struct HomeView: View {
                 ScrollView {
                     LazyVStack(spacing: 14) {
                         ForEach(groups, id: \.date) { group in
-                            DayCard(group: group)
+                            DayCard(group: group, onSelect: onSelect)
                         }
                     }
                     .padding(.horizontal, 18)
