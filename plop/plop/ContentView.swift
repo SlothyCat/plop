@@ -12,8 +12,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        // Placeholder until the Home + Entry UI lands in PR2.
-        Text("plop")
+        RootView()
             .task {
                 DefaultData.seedIfNeeded(in: modelContext)
             }
