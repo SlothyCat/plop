@@ -1,7 +1,8 @@
 import SwiftUI
+import SwiftData
 
 /// App routing skeleton: owns tab selection, shows the active screen, and overlays
-/// the custom tab bar. Insights/Settings are stubs for now; Home gets [] until PR3.
+/// the custom tab bar. Insights/Settings are stubs for now; Home reads via @Query.
 struct RootView: View {
     enum Tab { case home, insights, settings }
     @State private var selection: Tab = .home
@@ -12,7 +13,7 @@ struct RootView: View {
 
             Group {
                 switch selection {
-                case .home: HomeView(transactions: [])
+                case .home: HomeContainer()
                 case .insights: InsightsStubView()
                 case .settings: SettingsStubView()
                 }
@@ -34,5 +35,7 @@ struct RootView: View {
 }
 
 #if DEBUG
-#Preview { RootView() }
+#Preview {
+    RootView().modelContainer(SampleData.previewContainer())
+}
 #endif
