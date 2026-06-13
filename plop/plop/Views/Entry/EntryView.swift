@@ -8,6 +8,7 @@ struct EntryView: View {
     var editing: Transaction?
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
 
     @State private var mode: TransactionType = .expense
@@ -53,9 +54,9 @@ struct EntryView: View {
             Spacer()
             HStack(spacing: 8) {
                 circleButton("arrow.triangle.2.circlepath", active: recurrence != .none) { recurOpen = true }
-                if editing != nil {
+                if let tx = editing {
                     circleButton("trash", danger: true) {
-                        // TODO(PR5): delete via TransactionActions.delete
+                        TransactionActions.delete(tx, in: modelContext)
                         dismiss()
                     }
                 }
@@ -160,10 +161,14 @@ struct EntryView: View {
 
     private func confirm() {
         guard input.canSave else { return }
-        // TODO(PR5): persist via TransactionActions.add(draft, in: context)
-        _ = TransactionDraft(amount: input.value, type: mode, date: date,
-                             note: note.trimmingCharacters(in: .whitespaces),
-                             recurrence: recurrence, category: selected)
+        let draft = TransactionDraft(amount: input.value, type: mode, date: date,
+                                     note: note.trimmingCharacters(in: .whitespaces),
+                                     recurrence: recurrence, category: selected)
+        if let tx = editing {
+            TransactionActions.update(tx, with: draft)
+        } else {
+            TransactionActions.add(draft, in: modelContext)
+        }
         dismiss()
     }
 
