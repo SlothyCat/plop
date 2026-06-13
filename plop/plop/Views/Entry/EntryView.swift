@@ -36,7 +36,7 @@ struct EntryView: View {
             CategoryPickerSheet(categories: categories, selected: $selected) { pickerOpen = false }
         }
         .sheet(isPresented: $whenOpen) {
-            WhenSheet(date: $date) { whenOpen = false }
+            WhenSheet(date: $date)
         }
         .sheet(isPresented: $recurOpen) {
             RecurringSheet(recurrence: $recurrence) { recurOpen = false }
@@ -62,7 +62,7 @@ struct EntryView: View {
                 }
             }
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 16)
         .padding(.top, 12)
     }
 
@@ -111,7 +111,7 @@ struct EntryView: View {
             .padding(.horizontal, 16)
             .background(Palette.card, in: Capsule())
             .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
-            .frame(maxWidth: 240)
+            .frame(maxWidth: 180)
     }
 
     // MARK: date + category pills
@@ -119,28 +119,33 @@ struct EntryView: View {
     private var detailPills: some View {
         HStack(spacing: 10) {
             Button { whenOpen = true } label: {
-                HStack {
-                    Label(dateLabel, systemImage: "calendar")
-                    Spacer()
-                    Text(timeLabel).foregroundStyle(Palette.ink40)
+                HStack(spacing: 8) {
+                    Image(systemName: "calendar")
+                    Text(dateLabel).lineLimit(1)
+                    Spacer(minLength: 6)
+                    Text(timeLabel).foregroundStyle(Palette.ink40).lineLimit(1)
                 }
-                .font(.system(size: 15, weight: .medium))
+                .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(Palette.ink)
                 .padding(.vertical, 11)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, 14)
+                .frame(maxWidth: .infinity)
                 .background(Palette.card, in: Capsule())
                 .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
             }
 
             Button { pickerOpen = true } label: {
-                HStack {
+                HStack(spacing: 6) {
                     Image(systemName: selected?.symbolName ?? "square.grid.2x2")
                     Text(selected?.name ?? "Category")
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .frame(maxWidth: 90)
                 }
-                .font(.system(size: 15, weight: .medium))
+                .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(selected != nil ? Palette.tileInk : Palette.ink60)
                 .padding(.vertical, 11)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, 14)
                 .background(selected.map { Color(hex: $0.colorHex) } ?? Palette.card, in: Capsule())
                 .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
             }

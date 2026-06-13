@@ -1,29 +1,23 @@
 import SwiftUI
 
-/// Bottom sheet to set the transaction's date + time.
+/// Bottom sheet to set the transaction's date + time. The picker binds directly to
+/// `date`, so selections apply live — no confirm button. Dismiss by swiping down or
+/// tapping outside the sheet.
 struct WhenSheet: View {
     @Binding var date: Date
-    var onDismiss: () -> Void
 
     var body: some View {
         VStack(spacing: 16) {
             Capsule().fill(Palette.ink.opacity(0.15))
                 .frame(width: 38, height: 5)
-            Text("When")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(Palette.ink)
-
             DatePicker("Date & time", selection: $date)
                 .datePickerStyle(.graphical)
                 .labelsHidden()
                 .tint(Palette.accent)
-
-            Button("Done", action: onDismiss)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(Palette.accent)
-            Spacer(minLength: 0)
         }
-        .padding(18)
+        .padding(.horizontal, 18)
+        .padding(.top, 18)
+        .padding(.bottom, 20)
         .presentationDetents([.medium, .large])
     }
 }
