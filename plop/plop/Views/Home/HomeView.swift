@@ -22,7 +22,8 @@ struct HomeView: View {
             .padding(.top, 8)
 
             NetTotalHeader(net: net, period: period)
-                .padding(.vertical, 18)
+                .padding(.top, 14)
+                .padding(.bottom, 28)
 
             if groups.isEmpty {
                 Spacer()

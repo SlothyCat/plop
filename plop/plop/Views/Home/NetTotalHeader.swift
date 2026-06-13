@@ -6,7 +6,7 @@ struct NetTotalHeader: View {
     let period: PeriodFilter
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 18) {
             HStack(spacing: 8) {
                 Text("Net total")
                     .font(.system(size: 16, weight: .medium))

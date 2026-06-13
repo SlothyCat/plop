@@ -11,6 +11,7 @@ struct SegmentedToggle: View {
         }
         .padding(3)
         .background(Palette.ink.opacity(0.06), in: Capsule())
+        .fixedSize()
     }
 
     private func segment(_ type: TransactionType, _ label: String) -> some View {
@@ -18,9 +19,11 @@ struct SegmentedToggle: View {
         return Button { selection = type } label: {
             Text(label)
                 .font(.system(size: 15, weight: .semibold))
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundStyle(on ? Palette.ink : Palette.ink40)
                 .padding(.vertical, 8)
-                .padding(.horizontal, 22)
+                .padding(.horizontal, 18)
                 .background {
                     if on {
                         Capsule().fill(Palette.card)
