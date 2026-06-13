@@ -6,6 +6,7 @@ import SwiftData
 struct RootView: View {
     enum Tab { case home, insights, settings }
     @State private var selection: Tab = .home
+    @State private var showingEntry = false
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -23,11 +24,14 @@ struct RootView: View {
             TabBarView(selection: $selection, onCenterTap: handleCenterTap)
                 .ignoresSafeArea(edges: .bottom)
         }
+        .fullScreenCover(isPresented: $showingEntry) {
+            EntryView()
+        }
     }
 
     private func handleCenterTap() {
         if selection == .home {
-            // TODO(PR4): present the Entry screen here.
+            showingEntry = true
         } else {
             selection = .home
         }
