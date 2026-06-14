@@ -21,6 +21,7 @@ struct EntryView: View {
     @State private var pickerOpen = false
     @State private var whenOpen = false
     @State private var recurOpen = false
+    @State private var showingNewCategory = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -33,7 +34,12 @@ struct EntryView: View {
         }
         .background(Palette.bg.ignoresSafeArea())
         .sheet(isPresented: $pickerOpen) {
-            CategoryPickerSheet(categories: categories, selected: $selected) { pickerOpen = false }
+            CategoryPickerSheet(categories: categories, selected: $selected,
+                                onDismiss: { pickerOpen = false },
+                                onAddNew: { pickerOpen = false; showingNewCategory = true })
+        }
+        .sheet(isPresented: $showingNewCategory) {
+            CategoryFormView(onSave: { selected = $0 })
         }
         .sheet(isPresented: $whenOpen) {
             WhenSheet(date: $date)

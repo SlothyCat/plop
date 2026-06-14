@@ -7,6 +7,7 @@ struct CategoryPickerSheet: View {
     let categories: [ExpenseCategory]
     @Binding var selected: ExpenseCategory?
     var onDismiss: () -> Void
+    var onAddNew: () -> Void
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 2)
 
@@ -26,10 +27,26 @@ struct CategoryPickerSheet: View {
                     .accessibilityIdentifier("category-\(category.name)")
                 }
             }
+            newCategoryButton
             Spacer(minLength: 0)
         }
         .padding(18)
         .presentationDetents([.medium, .large])
+    }
+
+    private var newCategoryButton: some View {
+        Button(action: onAddNew) {
+            Label("New category", systemImage: "plus")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 13)
+                .background(
+                    RoundedRectangle(cornerRadius: 15, style: .continuous)
+                        .strokeBorder(Palette.ink12, style: StrokeStyle(lineWidth: 1.5, dash: [5]))
+                )
+        }
+        .buttonStyle(.plain)
     }
 
     private func tile(_ category: ExpenseCategory) -> some View {
