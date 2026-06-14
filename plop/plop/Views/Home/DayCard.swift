@@ -5,6 +5,7 @@ import SwiftUI
 struct DayCard: View {
     let group: DayGroup
     var onSelect: (Transaction) -> Void = { _ in }
+    @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
 
     var body: some View {
         VStack(spacing: 4) {
@@ -12,7 +13,7 @@ struct DayCard: View {
                 Text(dayLabel(for: group.date, relativeTo: .now, calendar: .current))
                     .tracking(0.6)
                 Spacer()
-                Text(formattedMoney(group.subtotal, currencyCode: deviceCurrencyCode()))
+                Text(formattedMoney(group.subtotal, currencyCode: currencyCode))
                     .monospacedDigit()
             }
             .font(.system(size: 12.5, weight: .semibold))

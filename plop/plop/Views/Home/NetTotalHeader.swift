@@ -4,6 +4,7 @@ import SwiftUI
 struct NetTotalHeader: View {
     let net: Decimal
     let period: PeriodFilter
+    @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
 
     var body: some View {
         VStack(spacing: 18) {
@@ -19,7 +20,7 @@ struct NetTotalHeader: View {
                     .background(Palette.card, in: Capsule())
                     .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
             }
-            Text(formattedMoney(net, currencyCode: deviceCurrencyCode()))
+            Text(formattedMoney(net, currencyCode: currencyCode))
                 .font(.system(size: 56, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(Palette.ink)
