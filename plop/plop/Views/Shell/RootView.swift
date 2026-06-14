@@ -16,7 +16,7 @@ struct RootView: View {
                 switch selection {
                 case .home: HomeContainer()
                 case .insights: InsightsContainer()
-                case .settings: SettingsStubView()
+                case .settings: SettingsView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

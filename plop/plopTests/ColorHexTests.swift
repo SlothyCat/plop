@@ -1,4 +1,5 @@
 import XCTest
+import SwiftUI
 @testable import plop
 
 final class ColorHexTests: XCTestCase {
@@ -17,5 +18,10 @@ final class ColorHexTests: XCTestCase {
     func test_invalidHexFallsBackToBlack() {
         let c = RGBA(hex: "zzz")
         XCTAssertEqual(c.red + c.green + c.blue, 0, accuracy: 0.001)
+    }
+
+    func test_toHex_roundTripsSwatch() {
+        XCTAssertEqual(Color(hex: "#8CC0EB").toHex(), "#8CC0EB")
+        XCTAssertEqual(Color(hex: "#FFEBCC").toHex(), "#FFEBCC")
     }
 }
