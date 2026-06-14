@@ -4,6 +4,8 @@ import SwiftData
 /// Settings tab: grouped list. Only "Manage categories" is wired for now; other rows
 /// arrive with their features.
 struct SettingsView: View {
+    @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
+
     var body: some View {
         NavigationStack {
             List {
@@ -12,6 +14,15 @@ struct SettingsView: View {
                         ManageCategoriesView()
                     } label: {
                         Label("Manage categories", systemImage: "tag.fill")
+                    }
+                    NavigationLink {
+                        CurrencyView()
+                    } label: {
+                        HStack {
+                            Label("Currency", systemImage: "dollarsign.circle.fill")
+                            Spacer()
+                            Text(currencyCode).foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
