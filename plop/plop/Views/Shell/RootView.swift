@@ -15,7 +15,7 @@ struct RootView: View {
             Group {
                 switch selection {
                 case .home: HomeContainer()
-                case .insights: InsightsStubView()
+                case .insights: InsightsContainer()
                 case .settings: SettingsStubView()
                 }
             }
