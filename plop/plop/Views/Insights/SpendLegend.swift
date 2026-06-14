@@ -4,6 +4,7 @@ import SwiftUI
 struct SpendLegend: View {
     let spend: [CategorySpend]
     let total: Decimal
+    @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -20,7 +21,7 @@ struct SpendLegend: View {
                         .foregroundStyle(Palette.ink)
                     Spacer(minLength: 8)
                     VStack(alignment: .trailing, spacing: 1) {
-                        Text(formattedMoney(item.amount, currencyCode: deviceCurrencyCode()))
+                        Text(formattedMoney(item.amount, currencyCode: currencyCode))
                             .font(.system(size: 17, weight: .semibold))
                             .monospacedDigit()
                             .foregroundStyle(Palette.ink)

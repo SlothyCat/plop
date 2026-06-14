@@ -11,6 +11,8 @@ struct EntryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
 
+    @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
+
     @State private var mode: TransactionType = .expense
     @State private var input = AmountInput(maxFractionDigits: currencyFractionDigits(currencyCode: deviceCurrencyCode()))
     @State private var note = ""
@@ -77,7 +79,7 @@ struct EntryView: View {
     private var amountArea: some View {
         VStack(spacing: 18) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(currencySymbol(deviceCurrencyCode()))
+                Text(currencySymbol(currencyCode))
                     .font(.system(size: 40, weight: .medium))
                     .foregroundStyle(Palette.ink40)
                 Text(input.display())
@@ -188,13 +190,17 @@ struct EntryView: View {
     }
 
     private func prefillIfEditing() {
-        guard let tx = editing else { return }
+        guard let tx = editing else {
+            input = AmountInput(maxFractionDigits: currencyFractionDigits(currencyCode: currencyCode))
+            return
+        }
         mode = tx.type
         note = tx.note
         date = tx.date
         recurrence = tx.recurrence
         selected = tx.category
-        input = AmountInput(value: tx.amount, maxFractionDigits: currencyFractionDigits(currencyCode: deviceCurrencyCode()))
+        input = AmountInput(value: tx.amount,
+                            maxFractionDigits: currencyFractionDigits(currencyCode: currencyCode))
     }
 
     private func circleButton(_ systemImage: String, active: Bool = false,

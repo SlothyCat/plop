@@ -5,6 +5,7 @@ import SwiftUI
 struct TxRow: View {
     let transaction: Transaction
     var onTap: () -> Void = {}
+    @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
 
     var body: some View {
         let amount = signedAmount(transaction)
@@ -27,7 +28,7 @@ struct TxRow: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 8)
-            Text(formattedMoney(amount, signed: true, currencyCode: deviceCurrencyCode()))
+            Text(formattedMoney(amount, signed: true, currencyCode: currencyCode))
                 .font(.system(size: 17, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(amount > 0 ? Palette.incomeGreen : Palette.ink)

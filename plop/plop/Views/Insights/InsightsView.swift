@@ -4,6 +4,7 @@ import SwiftUI
 struct InsightsView: View {
     let transactions: [Transaction]
     @State private var period: PeriodFilter = .month
+    @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
 
     var body: some View {
         let range = period.range(containing: .now, calendar: .current)
@@ -29,7 +30,7 @@ struct InsightsView: View {
                             .font(.system(size: 12, weight: .semibold))
                             .tracking(0.5)
                             .foregroundStyle(Palette.ink40)
-                        Text(formattedMoney(total, currencyCode: deviceCurrencyCode()))
+                        Text(formattedMoney(total, currencyCode: currencyCode))
                             .font(.system(size: 30, weight: .semibold))
                             .monospacedDigit()
                             .foregroundStyle(Palette.ink)
