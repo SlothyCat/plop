@@ -55,6 +55,15 @@ Three modal dialogs: Google Sheets export, add category, bug reporting.
   export formatting, SwiftData model logic) MUST be unit-tested. SwiftUI views are
   validated via `#Preview` and the simulator, not unit tests — don't force view tests.
 - **Commits:** Small, focused, present-tense messages. One logical change per commit.
+- **PR descriptions:** Use a terse two-section format:
+
+  ```markdown
+  ## Summary
+  <what changed and why / what it sets up — 1-3 lines>
+
+  ## Testing
+  <test + lint result, e.g. "58 unit tests pass (5 new); SwiftLint clean.">
+  ```
 
 ## Workflow (human-in-the-loop — important)
 
