@@ -31,6 +31,27 @@ final class CategoryActionsTests: XCTestCase {
         XCTAssertEqual(cat.colorHex, "#8CC0EB")
     }
 
+    func test_add_returnsInsertedCategory() throws {
+        let container = try makeInMemoryContainer()
+        let ctx = container.mainContext
+        let created = CategoryActions.add(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC", in: ctx)
+        XCTAssertEqual(created.name, "Food")
+        XCTAssertEqual(try ctx.fetch(FetchDescriptor<ExpenseCategory>()).count, 1)
+    }
+
+    func test_delete_removesEmptyCategory() throws {
+        let container = try makeInMemoryContainer()
+        let ctx = container.mainContext
+        let cat = ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC")
+        ctx.insert(cat)
+        try ctx.save()
+
+        CategoryActions.delete(cat, in: ctx)
+        try ctx.save()
+
+        XCTAssertEqual(try ctx.fetch(FetchDescriptor<ExpenseCategory>()).count, 0)
+    }
+
     func test_delete_reassignsTransactionsThenRemovesCategory() throws {
         let container = try makeInMemoryContainer()
         let ctx = container.mainContext

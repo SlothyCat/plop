@@ -4,6 +4,7 @@ import SwiftData
 /// Add (editing == nil) or edit a category: name, SF-Symbol icon, color.
 struct CategoryFormView: View {
     var editing: ExpenseCategory?
+    var onSave: ((ExpenseCategory) -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -100,8 +101,10 @@ struct CategoryFormView: View {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         if let editing {
             CategoryActions.update(editing, name: trimmed, symbolName: symbolName, colorHex: colorHex)
+            onSave?(editing)
         } else {
-            CategoryActions.add(name: trimmed, symbolName: symbolName, colorHex: colorHex, in: modelContext)
+            let created = CategoryActions.add(name: trimmed, symbolName: symbolName, colorHex: colorHex, in: modelContext)
+            onSave?(created)
         }
         dismiss()
     }
