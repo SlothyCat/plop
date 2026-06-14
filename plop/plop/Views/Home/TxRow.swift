@@ -27,7 +27,7 @@ struct TxRow: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 8)
-            Text(formattedMoney(amount, signed: true))
+            Text(formattedMoney(amount, signed: true, currencyCode: deviceCurrencyCode()))
                 .font(.system(size: 17, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(amount > 0 ? Palette.incomeGreen : Palette.ink)

@@ -54,11 +54,3 @@ struct AmountInput {
         return grouped
     }
 }
-
-/// Max fraction digits for the active currency (e.g. 2 for USD, 0 for JPY/KRW).
-func currencyFractionDigits(locale: Locale = .current) -> Int {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .currency
-    formatter.locale = locale
-    return formatter.maximumFractionDigits
-}

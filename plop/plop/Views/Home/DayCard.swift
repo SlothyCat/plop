@@ -12,7 +12,7 @@ struct DayCard: View {
                 Text(dayLabel(for: group.date, relativeTo: .now, calendar: .current))
                     .tracking(0.6)
                 Spacer()
-                Text(formattedMoney(group.subtotal))
+                Text(formattedMoney(group.subtotal, currencyCode: deviceCurrencyCode()))
                     .monospacedDigit()
             }
             .font(.system(size: 12.5, weight: .semibold))

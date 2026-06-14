@@ -29,7 +29,7 @@ struct InsightsView: View {
                             .font(.system(size: 12, weight: .semibold))
                             .tracking(0.5)
                             .foregroundStyle(Palette.ink40)
-                        Text(formattedMoney(total))
+                        Text(formattedMoney(total, currencyCode: deviceCurrencyCode()))
                             .font(.system(size: 30, weight: .semibold))
                             .monospacedDigit()
                             .foregroundStyle(Palette.ink)

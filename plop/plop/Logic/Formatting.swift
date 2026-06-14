@@ -2,10 +2,10 @@ import Foundation
 
 /// Currency string for an already-signed amount. `signed: true` forces an explicit
 /// +/− prefix (transaction rows); otherwise only negatives get a leading "-".
-func formattedMoney(_ amount: Decimal, signed: Bool = false, locale: Locale = .current) -> String {
+func formattedMoney(_ amount: Decimal, signed: Bool = false, currencyCode: String) -> String {
     let formatter = NumberFormatter()
     formatter.numberStyle = .currency
-    formatter.locale = locale
+    formatter.currencyCode = currencyCode
     let magnitude = NSDecimalNumber(decimal: abs(amount))
     let body = formatter.string(from: magnitude) ?? "\(abs(amount))"
     if signed { return (amount < 0 ? "-" : "+") + body }

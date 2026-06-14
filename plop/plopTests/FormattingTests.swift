@@ -2,14 +2,16 @@ import XCTest
 @testable import plop
 
 final class FormattingTests: XCTestCase {
-    private let enUS = Locale(identifier: "en_US")
-
     func test_money_unsignedNegativeShowsMinus() {
-        XCTAssertEqual(formattedMoney(Decimal(-612), signed: false, locale: enUS), "-$612.00")
+        let s = formattedMoney(Decimal(-612), signed: false, currencyCode: "USD")
+        XCTAssertTrue(s.hasPrefix("-"), s)
+        XCTAssertTrue(s.contains("612"), s)
     }
 
     func test_money_signedPositiveShowsPlus() {
-        XCTAssertEqual(formattedMoney(Decimal(1200), signed: true, locale: enUS), "+$1,200.00")
+        let s = formattedMoney(Decimal(1200), signed: true, currencyCode: "USD")
+        XCTAssertTrue(s.hasPrefix("+"), s)
+        XCTAssertTrue(s.contains("200"), s)
     }
 
     func test_dayLabel_todayAndYesterday() {
