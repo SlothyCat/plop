@@ -4,6 +4,8 @@ import SwiftUI
 /// view. Arcs draw one-at-a-time at constant speed, replaying on appear / slice change.
 struct DonutChart<Center: View>: View {
     let slices: [DonutSlice]
+    /// Changing this replays the draw even if `slices` are identical (e.g. period toggle).
+    var animationKey: AnyHashable = 0
     @ViewBuilder var center: () -> Center
 
     @State private var animate = false
@@ -38,7 +40,7 @@ struct DonutChart<Center: View>: View {
         }
         .frame(width: size, height: size)
         .onAppear { replay() }
-        .onChange(of: slices) { _, _ in replay() }
+        .onChange(of: animationKey) { _, _ in replay() }
     }
 
     /// Reset to hidden WITHOUT animating the reverse, then draw forward.

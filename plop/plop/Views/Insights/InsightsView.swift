@@ -23,7 +23,7 @@ struct InsightsView: View {
             .padding(.top, 8)
 
             ScrollView {
-                DonutChart(slices: slices) {
+                DonutChart(slices: slices, animationKey: period) {
                     VStack(spacing: 3) {
                         Text("SPENT")
                             .font(.system(size: 12, weight: .semibold))
