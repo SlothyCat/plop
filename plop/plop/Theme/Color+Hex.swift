@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Plain RGBA components parsed from a hex string — testable without SwiftUI.
 struct RGBA {
@@ -25,5 +26,14 @@ extension Color {
     init(hex: String) {
         let c = RGBA(hex: hex)
         self = Color(.sRGB, red: c.red, green: c.green, blue: c.blue, opacity: c.alpha)
+    }
+
+    /// "#RRGGBB" for the color's sRGB components.
+    func toHex() -> String {
+        let ui = UIColor(self)
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        ui.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return String(format: "#%02X%02X%02X",
+                      Int((r * 255).rounded()), Int((g * 255).rounded()), Int((b * 255).rounded()))
     }
 }
