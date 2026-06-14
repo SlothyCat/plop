@@ -20,7 +20,7 @@ struct SpendLegend: View {
                         .foregroundStyle(Palette.ink)
                     Spacer(minLength: 8)
                     VStack(alignment: .trailing, spacing: 1) {
-                        Text(formattedMoney(item.amount))
+                        Text(formattedMoney(item.amount, currencyCode: deviceCurrencyCode()))
                             .font(.system(size: 17, weight: .semibold))
                             .monospacedDigit()
                             .foregroundStyle(Palette.ink)

@@ -12,7 +12,7 @@ struct EntryView: View {
     @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
 
     @State private var mode: TransactionType = .expense
-    @State private var input = AmountInput(maxFractionDigits: currencyFractionDigits())
+    @State private var input = AmountInput(maxFractionDigits: currencyFractionDigits(currencyCode: deviceCurrencyCode()))
     @State private var note = ""
     @State private var date = Date.now
     @State private var selected: ExpenseCategory?
@@ -77,7 +77,7 @@ struct EntryView: View {
     private var amountArea: some View {
         VStack(spacing: 18) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(currencySymbol)
+                Text(currencySymbol(deviceCurrencyCode()))
                     .font(.system(size: 40, weight: .medium))
                     .foregroundStyle(Palette.ink40)
                 Text(input.display())
@@ -194,7 +194,7 @@ struct EntryView: View {
         date = tx.date
         recurrence = tx.recurrence
         selected = tx.category
-        input = AmountInput(value: tx.amount, maxFractionDigits: currencyFractionDigits())
+        input = AmountInput(value: tx.amount, maxFractionDigits: currencyFractionDigits(currencyCode: deviceCurrencyCode()))
     }
 
     private func circleButton(_ systemImage: String, active: Bool = false,
@@ -209,8 +209,6 @@ struct EntryView: View {
                 .overlay(Circle().stroke(active ? Color.clear : Palette.ink12, lineWidth: 1))
         }
     }
-
-    private var currencySymbol: String { Locale.current.currencySymbol ?? "$" }
 
     private var dateLabel: String {
         if Calendar.current.isDateInToday(date) { return "Today" }
