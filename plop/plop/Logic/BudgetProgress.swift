@@ -25,3 +25,56 @@ struct CategoryBudgetProgress: Identifiable, Equatable {
              / NSDecimalNumber(decimal: budget).doubleValue
     }
 }
+
+/// The fully-computed budget view-model for a period and flavour.
+struct BudgetSummary: Equatable {
+    let rows: [CategoryBudgetProgress]        // legend rows
+    let donutRows: [CategoryBudgetProgress]   // rows that draw donut arcs
+    let totalBudget: Decimal
+    let spentBudgeted: Decimal
+
+    var remaining: Decimal { totalBudget - spentBudgeted }
+    var isOver: Bool { remaining < 0 }
+}
+
+/// Assembles the budget summary from spend + categories for the active flavour.
+/// - general: rows = all spend; totalBudget = generalBudget × mult; spentBudgeted = total spent.
+/// - category: rows = all categories (each with its spend), sorted by spend desc;
+///   donutRows = the budgeted subset; totalBudget = Σ budgeted; spentBudgeted = Σ
+///   spent of budgeted. Uncategorized spend is omitted (no category to budget).
+func budgetSummary(spend: [CategorySpend],
+                   categories: [ExpenseCategory],
+                   mode: BudgetMode,
+                   generalBudget: String,
+                   period: PeriodFilter) -> BudgetSummary {
+    let mult = Decimal(periodBudgetMultiplier(period))
+
+    switch mode {
+    case .general:
+        let rows = spend.map {
+            CategoryBudgetProgress(id: $0.id, name: $0.name, colorHex: $0.colorHex,
+                                   spent: $0.amount, budget: 0)
+        }
+        return BudgetSummary(rows: rows, donutRows: rows,
+                             totalBudget: parseBudgetAmount(generalBudget) * mult,
+                             spentBudgeted: totalSpent(spend))
+
+    case .category:
+        let spentByName = Dictionary(uniqueKeysWithValues:
+            spend.filter { $0.id != uncategorizedSpendID }.map { ($0.name, $0.amount) })
+
+        var rows = categories.map { cat in
+            CategoryBudgetProgress(id: cat.name, name: cat.name, colorHex: cat.colorHex,
+                                   spent: spentByName[cat.name] ?? 0,
+                                   budget: cat.budget * mult)
+        }
+        rows.sort { $0.spent != $1.spent ? $0.spent > $1.spent : $0.name < $1.name }
+
+        let donutRows = rows.filter { $0.hasBudget }
+        return BudgetSummary(
+            rows: rows,
+            donutRows: donutRows,
+            totalBudget: donutRows.reduce(Decimal(0)) { $0 + $1.budget },
+            spentBudgeted: donutRows.reduce(Decimal(0)) { $0 + $1.spent })
+    }
+}
