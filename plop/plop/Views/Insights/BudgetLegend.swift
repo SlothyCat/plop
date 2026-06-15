@@ -129,7 +129,7 @@ private struct BudgetBar: View {
                                spent: 30, budget: 0)
     ]
     let summary = BudgetSummary(rows: rows, donutRows: rows.filter { $0.hasBudget },
-                               totalBudget: 1000, spentBudgeted: 1000)
+                                totalBudget: 1000, spentBudgeted: 1000)
     return BudgetLegend(summary: summary, flavour: .category)
         .padding()
         .background(Palette.bg)
