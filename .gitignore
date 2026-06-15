@@ -73,3 +73,8 @@ fastlane/test_output
 .AppleDouble
 .LSOverride
 ._*
+
+## ---------------------------------------------------------------------------
+## Secrets — real OAuth config (commit only Secrets.example.xcconfig)
+## ---------------------------------------------------------------------------
+Secrets.xcconfig
