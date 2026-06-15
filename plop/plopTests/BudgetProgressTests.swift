@@ -113,4 +113,47 @@ final class BudgetProgressTests: XCTestCase {
         XCTAssertEqual(s.remaining, -50)
         XCTAssertTrue(s.isOver)
     }
+
+    // MARK: budgetDonutSlices
+
+    private func generalSummary(spentAmounts: [(String, Decimal)],
+                                total: Decimal) -> BudgetSummary {
+        let rows = spentAmounts.map {
+            CategoryBudgetProgress(id: $0.0, name: $0.0, colorHex: "#FFEBCC",
+                                   spent: $0.1, budget: 0)
+        }
+        return BudgetSummary(rows: rows, donutRows: rows,
+                             totalBudget: total, spentBudgeted: totalSpentOf(rows))
+    }
+
+    private func totalSpentOf(_ rows: [CategoryBudgetProgress]) -> Decimal {
+        rows.reduce(Decimal(0)) { $0 + $1.spent }
+    }
+
+    func test_donut_underBudget_fillsPartially() {
+        let s = generalSummary(spentAmounts: [("Food", 300)], total: 1000)
+        let slices = budgetDonutSlices(s, gap: 0)
+        XCTAssertEqual(slices.count, 1)
+        XCTAssertEqual(slices[0].end, 0.3, accuracy: 0.0001)   // 300 / 1000
+    }
+
+    func test_donut_overBudget_clampsToFullRing() {
+        let s = generalSummary(spentAmounts: [("Food", 1500)], total: 1000)
+        let slices = budgetDonutSlices(s, gap: 0)
+        XCTAssertEqual(slices[0].end, 1.0, accuracy: 0.0001)   // clamped
+    }
+
+    func test_donut_emptyWhenNoBudget() {
+        let s = generalSummary(spentAmounts: [("Food", 300)], total: 0)
+        XCTAssertTrue(budgetDonutSlices(s).isEmpty)
+    }
+
+    func test_donut_multipleSlicesAreCumulative() {
+        let s = generalSummary(spentAmounts: [("Food", 200), ("Subs", 300)], total: 1000)
+        let slices = budgetDonutSlices(s, gap: 0)
+        XCTAssertEqual(slices.count, 2)
+        XCTAssertEqual(slices[0].end, 0.2, accuracy: 0.0001)
+        XCTAssertEqual(slices[1].start, 0.2, accuracy: 0.0001)
+        XCTAssertEqual(slices[1].end, 0.5, accuracy: 0.0001)
+    }
 }

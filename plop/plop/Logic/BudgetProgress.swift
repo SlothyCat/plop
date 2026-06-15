@@ -78,3 +78,24 @@ func budgetSummary(spend: [CategorySpend],
             spentBudgeted: donutRows.reduce(Decimal(0)) { $0 + $1.spent })
     }
 }
+
+/// Donut slices for budget mode: each `donutRows` entry's spent ÷ totalBudget,
+/// cumulative, clamped to [0, 1] so an over-budget ring fills to a full circle
+/// (over-ness is shown by the center caption, not by overflowing arcs).
+/// Empty when totalBudget == 0.
+func budgetDonutSlices(_ summary: BudgetSummary, gap: Double = 0.012) -> [DonutSlice] {
+    let total = summary.totalBudget
+    guard total > 0 else { return [] }
+    let totalDouble = NSDecimalNumber(decimal: total).doubleValue
+
+    var cursor = 0.0
+    var slices: [DonutSlice] = []
+    for row in summary.donutRows {
+        let frac = NSDecimalNumber(decimal: row.spent).doubleValue / totalDouble
+        let start = min(cursor + gap / 2, 1.0)
+        let end = min(max(start, cursor + frac - gap / 2), 1.0)
+        slices.append(DonutSlice(id: row.id, colorHex: row.colorHex, start: start, end: end))
+        cursor += frac
+    }
+    return slices
+}
