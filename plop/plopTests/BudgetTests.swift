@@ -71,4 +71,30 @@ final class BudgetTests: XCTestCase {
         ]
         XCTAssertEqual(activeBudgetTotal(mode: .category, generalBudget: "999", categories: cats), 420)
     }
+
+    // MARK: applyBudgetSave — mutually-exclusive rule
+
+    func test_save_general_clearsCategoriesAndReturnsTotal() {
+        let cats = [
+            ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC", budget: 300),
+            ExpenseCategory(name: "Subs", symbolName: "tv", colorHex: "#FFF9D2", budget: 120)
+        ]
+        let result = applyBudgetSave(mode: .general, generalField: "500",
+                                     categoryFields: cats.map { ($0, "999") })
+        XCTAssertEqual(parseBudgetAmount(result), 500)
+        XCTAssertEqual(cats[0].budget, 0)
+        XCTAssertEqual(cats[1].budget, 0)
+    }
+
+    func test_save_category_writesFieldsAndReturnsSum() {
+        let cats = [
+            ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC", budget: 0),
+            ExpenseCategory(name: "Subs", symbolName: "tv", colorHex: "#FFF9D2", budget: 0)
+        ]
+        let result = applyBudgetSave(mode: .category, generalField: "999",
+                                     categoryFields: [(cats[0], "300"), (cats[1], "120")])
+        XCTAssertEqual(cats[0].budget, 300)
+        XCTAssertEqual(cats[1].budget, 120)
+        XCTAssertEqual(parseBudgetAmount(result), 420)
+    }
 }

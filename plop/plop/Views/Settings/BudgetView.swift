@@ -94,13 +94,10 @@ struct BudgetView: View {
     }
 
     private func save() {
-        if mode == .general {
-            generalBudget = "\(parseBudgetAmount(generalField))"
-        } else {
-            for cat in categories {
-                cat.budget = parseBudgetAmount(catFields[cat.persistentModelID] ?? "")
-            }
-        }
+        let fields = categories.map { ($0, catFields[$0.persistentModelID] ?? "") }
+        generalBudget = applyBudgetSave(mode: mode, generalField: generalField,
+                                        categoryFields: fields)
+        loadFields()   // resync @State from the new persisted truth (modes replace each other)
     }
 }
 

@@ -50,5 +50,9 @@ that consumes the persistence contract defined here.
 4. **Category total is derived, never stored.** The category-mode total is
    always `sum(category.budget)`; storing it too would create two sources of
    truth that can drift.
+4a. **Modes are mutually exclusive, bridged by the sum.** Saving By category sets
+   the general total to the category sum; saving Total clears all per-category
+   budgets. Chosen over proportional rescaling (surprising, fractional) and over
+   fully independent stores (the two could silently disagree).
 5. **Pushed view, not a dialog.** The handoff calls it a "dialog," but the app's
    actual PREFERENCES rows (Currency, Manage categories) push — consistency wins.

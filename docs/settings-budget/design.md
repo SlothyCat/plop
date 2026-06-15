@@ -32,8 +32,14 @@ ExpenseCategory.budget       -> Decimal (0 = unset)       // per-category, alrea
 ```
 
 - **Category-mode total is derived**, never stored: `categoryBudgetSum(categories)`.
-- The two modes store independently — flipping the segmented control changes
-  which is "active"; neither erases the other's data.
+- **Modes are mutually exclusive, bridged by the sum.** Saving replaces the other
+  mode's data so the two never drift:
+  - Saving **By category** writes each category budget, then sets the general
+    total = the category sum.
+  - Saving **Total** clears all per-category budgets (a single total ignores
+    categories).
+  This is the `applyBudgetSave(...)` rule; after save the view reloads its fields
+  from the new persisted truth.
 - `Decimal` is not `@AppStorage`-able, so `generalBudget` is stored as a string
   and parsed. No `Double` money — exact decimal precision is preserved.
 
@@ -82,10 +88,10 @@ background, `Palette.bg`, `.navigationTitle("Set budget")`).
   field bound to a `@State [PersistentIdentifier: String]`); footer
   **"Total monthly budget"** = `formattedMoney(categoryBudgetSum(...))` recomputed
   live from the field values.
-- **Save:**
-  - general → `generalBudget = String` of parsed amount; `budgetMode = "general"`.
-  - category → write each `category.budget = parseBudgetAmount(field)` via
-    `modelContext`; `budgetMode = "category"`. Empty field -> 0 (no budget).
+- **Save:** delegates to `applyBudgetSave(mode:generalField:categoryFields:)`,
+  which applies the mutually-exclusive rule (above) and returns the
+  `generalBudget` string to persist; the view then reloads its fields. Empty
+  field -> 0 (no budget).
 - Amount fields use `.keyboardType(.decimalPad)` and sanitize via
   `parseBudgetAmount` on commit.
 

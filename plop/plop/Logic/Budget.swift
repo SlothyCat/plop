@@ -44,3 +44,20 @@ func activeBudgetTotal(mode: BudgetMode, generalBudget: String,
     case .category: return categoryBudgetSum(categories)
     }
 }
+
+/// Applies the mutually-exclusive save rule and returns the general-budget string
+/// to persist. The two modes replace each other, bridged by the sum:
+/// - `.general`: clears every category budget (a single total ignores categories).
+/// - `.category`: writes each field, then returns the resulting category sum.
+@discardableResult
+func applyBudgetSave(mode: BudgetMode, generalField: String,
+                     categoryFields: [(ExpenseCategory, String)]) -> String {
+    switch mode {
+    case .general:
+        for (cat, _) in categoryFields { cat.budget = 0 }
+        return "\(parseBudgetAmount(generalField))"
+    case .category:
+        for (cat, field) in categoryFields { cat.budget = parseBudgetAmount(field) }
+        return "\(categoryBudgetSum(categoryFields.map { $0.0 }))"
+    }
+}
