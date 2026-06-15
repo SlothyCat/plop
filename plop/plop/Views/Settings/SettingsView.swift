@@ -5,11 +5,23 @@ import SwiftData
 /// arrive with their features.
 struct SettingsView: View {
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
+    @AppStorage(budgetModeKey) private var budgetModeRaw = BudgetMode.category.rawValue
+    @AppStorage(generalBudgetKey) private var generalBudget = ""
+    @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
 
     var body: some View {
         NavigationStack {
             List {
                 Section("Preferences") {
+                    NavigationLink {
+                        BudgetView()
+                    } label: {
+                        HStack {
+                            Label("Set budget", systemImage: "chart.pie.fill")
+                            Spacer()
+                            Text(budgetSummary).foregroundStyle(.secondary)
+                        }
+                    }
                     NavigationLink {
                         ManageCategoriesView()
                     } label: {
@@ -31,6 +43,13 @@ struct SettingsView: View {
             .background(Palette.bg)
         }
         .tint(Palette.accent)
+    }
+
+    private var budgetSummary: String {
+        let mode = BudgetMode(rawValue: budgetModeRaw) ?? .category
+        let total = activeBudgetTotal(mode: mode, generalBudget: generalBudget,
+                                      categories: categories)
+        return total == 0 ? "None" : formattedMoney(total, currencyCode: currencyCode)
     }
 }
 
