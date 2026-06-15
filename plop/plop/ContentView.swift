@@ -10,9 +10,11 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @AppStorage(themeModeKey) private var themeModeRaw = ThemeMode.automatic.rawValue
 
     var body: some View {
         RootView()
+            .preferredColorScheme((ThemeMode(rawValue: themeModeRaw) ?? .automatic).colorScheme)
             .task {
                 DefaultData.seedIfNeeded(in: modelContext)
             }

@@ -28,6 +28,11 @@ extension Color {
         self = Color(.sRGB, red: c.red, green: c.green, blue: c.blue, opacity: c.alpha)
     }
 
+    /// Resolves to `light` or `dark` per the active interface style; repaints on flip.
+    static func dynamic(_ light: Color, _ dark: Color) -> Color {
+        Color(UIColor { $0.userInterfaceStyle == .dark ? UIColor(dark) : UIColor(light) })
+    }
+
     /// "#RRGGBB" for the color's sRGB components.
     func toHex() -> String {
         let ui = UIColor(self)

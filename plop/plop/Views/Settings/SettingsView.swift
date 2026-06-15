@@ -8,6 +8,8 @@ struct SettingsView: View {
     @AppStorage(budgetModeKey) private var budgetModeRaw = BudgetMode.category.rawValue
     @AppStorage(generalBudgetKey) private var generalBudget = ""
     @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
+    @AppStorage(themeModeKey) private var themeModeRaw = ThemeMode.automatic.rawValue
+    @State private var showingAppearance = false
 
     var body: some View {
         NavigationStack {
@@ -36,11 +38,28 @@ struct SettingsView: View {
                             Text(currencyCode).foregroundStyle(.secondary)
                         }
                     }
+                    Button {
+                        showingAppearance = true
+                    } label: {
+                        HStack {
+                            Label("Theme", systemImage: "circle.lefthalf.filled")
+                            Spacer()
+                            Text((ThemeMode(rawValue: themeModeRaw) ?? .automatic).title)
+                                .foregroundStyle(.secondary)
+                            Image(systemName: "chevron.forward")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .navigationTitle("Settings")
             .scrollContentBackground(.hidden)
             .background(Palette.bg)
+            .sheet(isPresented: $showingAppearance) {
+                AppearanceSheet { showingAppearance = false }
+            }
         }
         .tint(Palette.accent)
     }
