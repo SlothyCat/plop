@@ -27,11 +27,26 @@
 		586DDE4E2FCF343E0062824D /* plop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = plop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		586DDE5D2FCF343F0062824D /* plopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = plopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		586DDE672FCF343F0062824D /* plopUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = plopUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		58A8DF4A2FE1381A0052EDFD /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Secrets.xcconfig; path = ../Secrets.xcconfig; sourceTree = SOURCE_ROOT; };
+		58A8DF4B2FE1382C0052EDFD /* Secrets.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Secrets.example.xcconfig; path = ../Secrets.example.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		58A8DF502FE13BF50052EDFD /* Exceptions for "plop" folder in "plop" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 586DDE4D2FCF343E0062824D /* plop */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		586DDE502FCF343E0062824D /* plop */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				58A8DF502FE13BF50052EDFD /* Exceptions for "plop" folder in "plop" target */,
+			);
 			path = plop;
 			sourceTree = "<group>";
 		};
@@ -75,6 +90,8 @@
 		586DDE452FCF343E0062824D = {
 			isa = PBXGroup;
 			children = (
+				58A8DF4B2FE1382C0052EDFD /* Secrets.example.xcconfig */,
+				58A8DF4A2FE1381A0052EDFD /* Secrets.xcconfig */,
 				586DDE502FCF343E0062824D /* plop */,
 				586DDE602FCF343F0062824D /* plopTests */,
 				586DDE6A2FCF343F0062824D /* plopUITests */,
@@ -322,6 +339,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = plop/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -380,6 +398,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = plop/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -392,6 +411,7 @@
 		};
 		586DDE722FCF343F0062824D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 58A8DF4A2FE1381A0052EDFD /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -424,6 +444,7 @@
 		};
 		586DDE732FCF343F0062824D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 58A8DF4A2FE1381A0052EDFD /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
