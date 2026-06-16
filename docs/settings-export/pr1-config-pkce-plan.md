@@ -11,8 +11,8 @@
 Branch `feature/export` (already created; spec committed there).
 
 > **The OAuth client ID for this project** (public — embedded in the app binary, not a secret):
-> `848635115027-h0jhjr8r4b9bslvbq21m7g69v0qmevlu.apps.googleusercontent.com`
-> Redirect scheme (reversed): `com.googleusercontent.apps.848635115027-h0jhjr8r4b9bslvbq21m7g69v0qmevlu`
+> `YOUR_CLIENT_ID.apps.googleusercontent.com`
+> Redirect scheme (reversed): `com.googleusercontent.apps.YOUR_CLIENT_ID`
 
 ---
 
@@ -85,8 +85,8 @@ GOOGLE_REDIRECT_SCHEME = com.googleusercontent.apps.YOUR_CLIENT_ID
 Create `Secrets.xcconfig`:
 
 ```xcconfig
-GOOGLE_OAUTH_CLIENT_ID = 848635115027-h0jhjr8r4b9bslvbq21m7g69v0qmevlu.apps.googleusercontent.com
-GOOGLE_REDIRECT_SCHEME = com.googleusercontent.apps.848635115027-h0jhjr8r4b9bslvbq21m7g69v0qmevlu
+GOOGLE_OAUTH_CLIENT_ID = YOUR_CLIENT_ID.apps.googleusercontent.com
+GOOGLE_REDIRECT_SCHEME = com.googleusercontent.apps.YOUR_CLIENT_ID
 ```
 
 - [ ] **Step 4: Confirm it is ignored**
