@@ -82,6 +82,13 @@ jobs:
           restore-keys: |
             spm-${{ runner.os }}-
 
+      # The target's base configuration points at Secrets.xcconfig, which is
+      # git-ignored (the real client ID lives there locally). CI has no such file,
+      # so materialize a placeholder from the committed example — unit tests don't
+      # do live OAuth, so placeholder values are fine and just need to resolve.
+      - name: Provision Secrets.xcconfig
+        run: cp Secrets.example.xcconfig Secrets.xcconfig
+
       - name: Build & test
         run: |
           if [ -n "$WORKSPACE" ]; then
