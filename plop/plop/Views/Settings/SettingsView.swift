@@ -10,6 +10,8 @@ struct SettingsView: View {
     @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
     @AppStorage(themeModeKey) private var themeModeRaw = ThemeMode.automatic.rawValue
     @State private var showingAppearance = false
+    @Query private var transactions: [Transaction]
+    @State private var showingExport = false
 
     var body: some View {
         NavigationStack {
@@ -53,12 +55,31 @@ struct SettingsView: View {
                     }
                     .buttonStyle(.plain)
                 }
+                Section {
+                    Button {
+                        showingExport = true
+                    } label: {
+                        HStack {
+                            Label("Export to Google Sheets", systemImage: "square.and.arrow.up")
+                            Spacer()
+                            Image(systemName: "chevron.forward")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
             }
             .navigationTitle("Settings")
             .scrollContentBackground(.hidden)
             .background(Palette.bg)
             .sheet(isPresented: $showingAppearance) {
                 AppearanceSheet { showingAppearance = false }
+            }
+            .sheet(isPresented: $showingExport) {
+                ExportSheet(transactions: transactions, categories: categories) {
+                    showingExport = false
+                }
             }
         }
         .tint(Palette.accent)
