@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Export dialog: pick a range, run the export, and show progress / success (with a
-/// link to the sheet) / error. Builds the month matrices from local data on Export.
+/// link to the sheet) / error. The sheet hugs its content via a measured detent.
 struct ExportSheet: View {
     let transactions: [Transaction]
     let categories: [ExpenseCategory]
@@ -17,6 +17,7 @@ struct ExportSheet: View {
     @State private var from = Calendar.current.date(byAdding: .month, value: -1, to: .now) ?? .now
     @State private var to = Date.now
     @State private var emptyNotice = false
+    @State private var sheetHeight: CGFloat = 320
 
     private enum RangeKind: String, CaseIterable {
         case thisMonth = "This month"
@@ -24,20 +25,21 @@ struct ExportSheet: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            switch service.phase {
-            case .running:
-                phaseRunning
-            case .success(let url):
-                phaseSuccess(url)
-            default:
-                form
-            }
+        content
+            .padding(24)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Palette.bg)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { sheetHeight = $0 }
+            .presentationDetents([.height(sheetHeight)])
+            .presentationDragIndicator(.visible)
+    }
+
+    @ViewBuilder private var content: some View {
+        switch service.phase {
+        case .running: phaseRunning
+        case .success(let url): phaseSuccess(url)
+        default: form
         }
-        .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Palette.bg)
-        .presentationDetents([.medium])
     }
 
     private var form: some View {
@@ -54,6 +56,7 @@ struct ExportSheet: View {
             Text("Your transactions for the selected period are sent to a sheet in your "
                  + "Google account.")
                 .font(.system(size: 14)).foregroundStyle(Palette.ink60)
+                .fixedSize(horizontal: false, vertical: true)
 
             Picker("Range", selection: $rangeKind) {
                 ForEach(RangeKind.allCases, id: \.self) { Text($0.rawValue).tag($0) }
@@ -86,7 +89,6 @@ struct ExportSheet: View {
                 .buttonStyle(.borderedProminent).tint(Palette.accent)
                 Button("Cancel") { onDone() }.foregroundStyle(Palette.ink60)
             }
-            Spacer(minLength: 0)
         }
     }
 
@@ -95,7 +97,8 @@ struct ExportSheet: View {
             ProgressView().controlSize(.large)
             Text("Exporting…").font(.system(size: 15)).foregroundStyle(Palette.ink60)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 24)
     }
 
     private func phaseSuccess(_ url: URL) -> some View {
@@ -110,7 +113,8 @@ struct ExportSheet: View {
             .buttonStyle(.borderedProminent).tint(Palette.accent)
             Button("Done") { onDone() }.foregroundStyle(Palette.ink60)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
     }
 
     private func runExport() async {
