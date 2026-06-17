@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var showingAppearance = false
     @Query private var transactions: [Transaction]
     @State private var showingExport = false
+    @State private var showingBugReport = false
 
     var body: some View {
         NavigationStack {
@@ -55,12 +56,24 @@ struct SettingsView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                Section {
+                Section("Support") {
                     Button {
                         showingExport = true
                     } label: {
                         HStack {
                             Label("Export to Google Sheets", systemImage: "square.and.arrow.up")
+                            Spacer()
+                            Image(systemName: "chevron.forward")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    Button {
+                        showingBugReport = true
+                    } label: {
+                        HStack {
+                            Label("Report a bug", systemImage: "ladybug.fill")
                             Spacer()
                             Image(systemName: "chevron.forward")
                                 .font(.system(size: 13, weight: .semibold))
@@ -80,6 +93,9 @@ struct SettingsView: View {
                 ExportSheet(transactions: transactions, categories: categories) {
                     showingExport = false
                 }
+            }
+            .sheet(isPresented: $showingBugReport) {
+                BugReportSheet()
             }
         }
         .tint(Palette.accent)
