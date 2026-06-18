@@ -25,10 +25,17 @@ struct plopApp: App {
         }
     }()
 
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
         .modelContainer(sharedModelContainer)
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                RecurringGenerator.generate(in: sharedModelContainer.mainContext)
+            }
+        }
     }
 }
