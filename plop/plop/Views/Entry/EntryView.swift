@@ -24,6 +24,7 @@ struct EntryView: View {
     @State private var whenOpen = false
     @State private var recurOpen = false
     @State private var showingNewCategory = false
+    @State private var showingRecurringConfirm = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -48,6 +49,14 @@ struct EntryView: View {
         }
         .sheet(isPresented: $recurOpen) {
             RecurringSheet(recurrence: $recurrence) { recurOpen = false }
+        }
+        .confirmationDialog("Recurring payment", isPresented: $showingRecurringConfirm,
+                            titleVisibility: .visible) {
+            Button("Create") { performSave() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This repeats \(recurringSummary(interval: recurrence, date: date)) "
+                 + "until you stop it.")
         }
         .onAppear(perform: prefillIfEditing)
     }
@@ -103,7 +112,8 @@ struct EntryView: View {
 
             if recurrence != .none {
                 Button { recurOpen = true } label: {
-                    Label("Repeats \(recurrence.rawValue)", systemImage: "arrow.triangle.2.circlepath")
+                    Label("Repeats \(recurringSummary(interval: recurrence, date: date))",
+                          systemImage: "arrow.triangle.2.circlepath")
                         .font(.system(size: 13.5, weight: .semibold))
                         .foregroundStyle(Palette.ink60)
                 }
@@ -178,11 +188,21 @@ struct EntryView: View {
 
     private func confirm() {
         guard canSave else { return }
+        if editing == nil && recurrence != .none {
+            showingRecurringConfirm = true
+        } else {
+            performSave()
+        }
+    }
+
+    private func performSave() {
         let draft = TransactionDraft(amount: input.value, type: mode, date: date,
                                      note: note.trimmingCharacters(in: .whitespaces),
                                      recurrence: recurrence, category: selected)
         if let tx = editing {
             TransactionActions.update(tx, with: draft)
+        } else if draft.recurrence != .none {
+            RecurringActions.create(from: draft, in: modelContext)
         } else {
             TransactionActions.add(draft, in: modelContext)
         }
