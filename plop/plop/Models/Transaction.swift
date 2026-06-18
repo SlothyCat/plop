@@ -10,6 +10,7 @@ final class Transaction {
     var recurrence: RecurrenceInterval
     var createdAt: Date           // stable sort tiebreaker
     var category: ExpenseCategory?
+    var rule: RecurringRule?      // set when this is a generated recurring occurrence
 
     init(amount: Decimal,
          type: TransactionType,

@@ -25,6 +25,6 @@ func makeDate(_ year: Int, _ month: Int, _ day: Int,
 @MainActor
 func makeInMemoryContainer() throws -> ModelContainer {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    return try ModelContainer(for: Transaction.self, ExpenseCategory.self,
+    return try ModelContainer(for: Transaction.self, ExpenseCategory.self, RecurringRule.self,
                               configurations: config)
 }
