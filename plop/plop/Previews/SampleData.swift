@@ -10,7 +10,7 @@ enum SampleData {
     static func previewContainer() -> ModelContainer {
         do {
             let container = try ModelContainer(
-                for: Transaction.self, ExpenseCategory.self,
+                for: Transaction.self, ExpenseCategory.self, RecurringRule.self,
                 configurations: ModelConfiguration(isStoredInMemoryOnly: true)
             )
             for tx in transactions() {

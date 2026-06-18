@@ -14,6 +14,7 @@ struct plopApp: App {
         let schema = Schema([
             Transaction.self,
             ExpenseCategory.self,
+            RecurringRule.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
