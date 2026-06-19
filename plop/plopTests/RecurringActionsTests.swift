@@ -52,4 +52,21 @@ final class RecurringActionsTests: XCTestCase {
         XCTAssertEqual(added, 0)
         XCTAssertEqual(try context.fetch(FetchDescriptor<Transaction>()).count, 1)
     }
+
+    func test_cancel_removesRule_keepsOccurrence() throws {
+        let container = try makeInMemoryContainer()
+        let context = container.mainContext
+        let draft = TransactionDraft(amount: 9, type: .expense, date: day(2026, 6, 18),
+                                     note: "Gym", recurrence: .monthly)
+        let rule = RecurringActions.create(from: draft, in: context, calendar: utc)
+        try context.save()
+
+        RecurringActions.cancel(rule, in: context)
+        try context.save()
+
+        XCTAssertEqual(try context.fetch(FetchDescriptor<RecurringRule>()).count, 0)
+        let txs = try context.fetch(FetchDescriptor<Transaction>())
+        XCTAssertEqual(txs.count, 1)        // first occurrence kept
+        XCTAssertNil(txs.first?.rule)       // link nullified
+    }
 }
