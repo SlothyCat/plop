@@ -1,16 +1,17 @@
 import SwiftUI
 import SwiftData
 
-/// Settings tab: grouped list. Only "Manage categories" is wired for now; other rows
-/// arrive with their features.
+/// Settings tab: grouped list (DATA / PREFERENCES / RECURRING / SUPPORT). Rows use the
+/// shared SettingsRow for consistent alignment. Behaviors are unchanged: Set budget /
+/// Manage categories / Currency push; Theme / Recurring / Export / Bug open sheets.
 struct SettingsView: View {
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @AppStorage(budgetModeKey) private var budgetModeRaw = BudgetMode.category.rawValue
     @AppStorage(generalBudgetKey) private var generalBudget = ""
-    @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
     @AppStorage(themeModeKey) private var themeModeRaw = ThemeMode.automatic.rawValue
-    @State private var showingAppearance = false
+    @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
     @Query private var transactions: [Transaction]
+    @State private var showingAppearance = false
     @State private var showingExport = false
     @State private var showingBugReport = false
     @State private var showingRecurring = false
@@ -18,82 +19,58 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Preferences") {
-                    NavigationLink {
-                        BudgetView()
-                    } label: {
-                        HStack {
-                            Label("Set budget", systemImage: "chart.pie.fill")
-                            Spacer()
-                            Text(budgetSummary).foregroundStyle(.secondary)
-                        }
-                    }
-                    NavigationLink {
-                        ManageCategoriesView()
-                    } label: {
-                        Label("Manage categories", systemImage: "tag.fill")
-                    }
-                    NavigationLink {
-                        CurrencyView()
-                    } label: {
-                        HStack {
-                            Label("Currency", systemImage: "dollarsign.circle.fill")
-                            Spacer()
-                            Text(currencyCode).foregroundStyle(.secondary)
-                        }
-                    }
-                    Button {
-                        showingAppearance = true
-                    } label: {
-                        HStack {
-                            Label("Theme", systemImage: "circle.lefthalf.filled")
-                            Spacer()
-                            Text((ThemeMode(rawValue: themeModeRaw) ?? .automatic).title)
-                                .foregroundStyle(.secondary)
-                            Image(systemName: "chevron.forward")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.tertiary)
-                        }
+                Section {
+                    Button { showingExport = true } label: {
+                        SettingsRow(tile: Palette.accent, systemImage: "square.and.arrow.up",
+                                    title: "Export to Google Sheets")
                     }
                     .buttonStyle(.plain)
-                    Button {
-                        showingRecurring = true
-                    } label: {
-                        HStack {
-                            Label("Recurring payments", systemImage: "arrow.triangle.2.circlepath")
-                            Spacer()
-                            Image(systemName: "chevron.forward")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.tertiary)
-                        }
+                } header: { groupLabel("DATA") }
+
+                Section {
+                    NavigationLink { BudgetView() } label: {
+                        SettingsRow(tile: Palette.accent, systemImage: "chart.pie.fill",
+                                    title: "Set budget", value: budgetSummary, showsChevron: false)
+                    }
+                    NavigationLink { ManageCategoriesView() } label: {
+                        SettingsRow(tile: Palette.accentSoft, systemImage: "tag.fill",
+                                    title: "Manage categories", showsChevron: false)
+                    }
+                    NavigationLink { CurrencyView() } label: {
+                        SettingsRow(tile: Palette.cream, systemImage: "dollarsign.circle.fill",
+                                    title: "Currency", value: currencyCode, showsChevron: false)
+                    }
+                    Button { showingAppearance = true } label: {
+                        SettingsRow(tile: Palette.yellow, systemImage: "circle.lefthalf.filled",
+                                    title: "Theme",
+                                    value: (ThemeMode(rawValue: themeModeRaw) ?? .automatic).title)
                     }
                     .buttonStyle(.plain)
-                }
-                Section("Support") {
-                    Button {
-                        showingExport = true
-                    } label: {
-                        HStack {
-                            Label("Export to Google Sheets", systemImage: "square.and.arrow.up")
-                            Spacer()
-                            Image(systemName: "chevron.forward")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.tertiary)
-                        }
+                } header: { groupLabel("PREFERENCES") }
+
+                Section {
+                    Button { showingRecurring = true } label: {
+                        SettingsRow(tile: Palette.accentSoft,
+                                    systemImage: "arrow.triangle.2.circlepath",
+                                    title: "Recurring payments")
                     }
                     .buttonStyle(.plain)
-                    Button {
-                        showingBugReport = true
-                    } label: {
-                        HStack {
-                            Label("Report a bug", systemImage: "ladybug.fill")
-                            Spacer()
-                            Image(systemName: "chevron.forward")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.tertiary)
-                        }
+                } header: { groupLabel("RECURRING") }
+
+                Section {
+                    Button { showingBugReport = true } label: {
+                        SettingsRow(tile: Palette.accentSoft, systemImage: "ladybug.fill",
+                                    title: "Report a bug")
                     }
                     .buttonStyle(.plain)
+                } header: { groupLabel("SUPPORT") }
+
+                Section {
+                    Text(versionText)
+                        .font(.system(size: 12.5))
+                        .foregroundStyle(Palette.ink40)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .listRowBackground(Color.clear)
                 }
             }
             .navigationTitle("Settings")
@@ -115,6 +92,18 @@ struct SettingsView: View {
             }
         }
         .tint(Palette.accent)
+    }
+
+    private func groupLabel(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 12.5, weight: .semibold))
+            .tracking(0.5)
+            .foregroundStyle(Palette.ink40)
+    }
+
+    private var versionText: String {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        return "Version \(version ?? "")"
     }
 
     private var budgetSummary: String {
