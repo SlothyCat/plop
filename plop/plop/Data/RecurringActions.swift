@@ -24,4 +24,10 @@ enum RecurringActions {
         rule.lastGeneratedDate = calendar.startOfDay(for: draft.date)
         return rule
     }
+
+    /// Cancels a recurrence: deletes the rule so nothing new generates. Past
+    /// occurrences remain (occurrences relationship is .nullify — their `rule` clears).
+    static func cancel(_ rule: RecurringRule, in context: ModelContext) {
+        context.delete(rule)
+    }
 }

@@ -13,6 +13,7 @@ struct SettingsView: View {
     @Query private var transactions: [Transaction]
     @State private var showingExport = false
     @State private var showingBugReport = false
+    @State private var showingRecurring = false
 
     var body: some View {
         NavigationStack {
@@ -49,6 +50,18 @@ struct SettingsView: View {
                             Spacer()
                             Text((ThemeMode(rawValue: themeModeRaw) ?? .automatic).title)
                                 .foregroundStyle(.secondary)
+                            Image(systemName: "chevron.forward")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    Button {
+                        showingRecurring = true
+                    } label: {
+                        HStack {
+                            Label("Recurring payments", systemImage: "arrow.triangle.2.circlepath")
+                            Spacer()
                             Image(systemName: "chevron.forward")
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(.tertiary)
@@ -96,6 +109,9 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingBugReport) {
                 BugReportSheet()
+            }
+            .sheet(isPresented: $showingRecurring) {
+                RecurringRulesSheet { showingRecurring = false }
             }
         }
         .tint(Palette.accent)
