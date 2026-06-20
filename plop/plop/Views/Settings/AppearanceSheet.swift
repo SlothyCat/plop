@@ -4,7 +4,7 @@ import SwiftUI
 /// @AppStorage(themeModeKey); the app repaints live behind the sheet. Done dismisses.
 struct AppearanceSheet: View {
     @AppStorage(themeModeKey) private var themeModeRaw = ThemeMode.automatic.rawValue
-    var onDone: () -> Void
+    @Environment(\.blurPopupClose) private var close
 
     private var selected: ThemeMode { ThemeMode(rawValue: themeModeRaw) ?? .automatic }
 
@@ -26,16 +26,14 @@ struct AppearanceSheet: View {
                 }
             }
 
-            Button("Done") { onDone() }
+            Button("Done") { close() }
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 4)
         }
         .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Palette.card)
-        .presentationDetents([.medium])
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func card(_ mode: ThemeMode) -> some View {
@@ -73,5 +71,5 @@ struct AppearanceSheet: View {
 }
 
 #if DEBUG
-#Preview { AppearanceSheet(onDone: {}) }
+#Preview { AppearanceSheet() }
 #endif

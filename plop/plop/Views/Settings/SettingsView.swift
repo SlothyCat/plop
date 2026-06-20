@@ -76,13 +76,11 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .scrollContentBackground(.hidden)
             .background(Palette.bg)
-            .sheet(isPresented: $showingAppearance) {
-                AppearanceSheet { showingAppearance = false }
+            .blurPopup(isPresented: $showingAppearance) {
+                AppearanceSheet()
             }
-            .sheet(isPresented: $showingExport) {
-                ExportSheet(transactions: transactions, categories: categories) {
-                    showingExport = false
-                }
+            .blurPopup(isPresented: $showingExport) {
+                ExportSheet(transactions: transactions, categories: categories)
             }
             .sheet(isPresented: $showingBugReport) {
                 BugReportSheet()

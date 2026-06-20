@@ -5,7 +5,7 @@ import SwiftUI
 struct ExportSheet: View {
     let transactions: [Transaction]
     let categories: [ExpenseCategory]
-    var onDone: () -> Void
+    @Environment(\.blurPopupClose) private var close
 
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @AppStorage(budgetModeKey) private var budgetModeRaw = BudgetMode.category.rawValue
@@ -17,7 +17,6 @@ struct ExportSheet: View {
     @State private var from = Calendar.current.date(byAdding: .month, value: -1, to: .now) ?? .now
     @State private var to = Date.now
     @State private var emptyNotice = false
-    @State private var sheetHeight: CGFloat = 320
 
     private enum RangeKind: String, CaseIterable {
         case thisMonth = "This month"
@@ -28,10 +27,6 @@ struct ExportSheet: View {
         content
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Palette.bg)
-            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { sheetHeight = $0 }
-            .presentationDetents([.height(sheetHeight)])
-            .presentationDragIndicator(.visible)
     }
 
     @ViewBuilder private var content: some View {
@@ -87,7 +82,7 @@ struct ExportSheet: View {
                     Text("Export").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent).tint(Palette.accent)
-                Button("Cancel") { onDone() }.foregroundStyle(Palette.ink60)
+                Button("Cancel") { close() }.foregroundStyle(Palette.ink60)
             }
         }
     }
@@ -111,7 +106,7 @@ struct ExportSheet: View {
                 Label("Open in Google Sheets", systemImage: "arrow.up.right.square")
             }
             .buttonStyle(.borderedProminent).tint(Palette.accent)
-            Button("Done") { onDone() }.foregroundStyle(Palette.ink60)
+            Button("Done") { close() }.foregroundStyle(Palette.ink60)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
@@ -134,6 +129,6 @@ struct ExportSheet: View {
 
 #if DEBUG
 #Preview {
-    ExportSheet(transactions: [], categories: [], onDone: {})
+    ExportSheet(transactions: [], categories: [])
 }
 #endif
