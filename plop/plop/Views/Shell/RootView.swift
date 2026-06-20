@@ -22,7 +22,6 @@ struct RootView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             TabBarView(selection: $selection, onCenterTap: handleCenterTap)
-                .ignoresSafeArea(edges: .bottom)
         }
         .fullScreenCover(isPresented: $showingEntry) {
             EntryView()
