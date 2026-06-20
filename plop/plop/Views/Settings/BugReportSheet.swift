@@ -6,14 +6,13 @@ import UIKit
 /// Report-a-bug dialog: a description + optional screenshot, sent via the native Mail
 /// composer (with a no-Mail fallback). Content-hugging detent like ExportSheet.
 struct BugReportSheet: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.blurPopupClose) private var close
 
     @State private var description = ""
     @State private var pickerItem: PhotosPickerItem?
     @State private var imageData: Data?
     @State private var showingMail = false
     @State private var showFallback = false
-    @State private var sheetHeight: CGFloat = 380
 
     private var canSend: Bool {
         !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -23,15 +22,11 @@ struct BugReportSheet: View {
         content
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Palette.bg)
-            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { sheetHeight = $0 }
-            .presentationDetents([.height(sheetHeight)])
-            .presentationDragIndicator(.visible)
             .sheet(isPresented: $showingMail) {
                 MailComposeView(subject: BugReport.subject, body: composedBody(),
                                 imageData: imageData) { _ in
                     showingMail = false
-                    dismiss()
+                    close()
                 }
             }
             .onChange(of: pickerItem) { _, item in
@@ -74,7 +69,7 @@ struct BugReportSheet: View {
                 Button { send() } label: { Text("Send").frame(maxWidth: .infinity) }
                     .buttonStyle(.borderedProminent).tint(Palette.accent)
                     .disabled(!canSend)
-                Button("Cancel") { dismiss() }.foregroundStyle(Palette.ink60)
+                Button("Cancel") { close() }.foregroundStyle(Palette.ink60)
             }
         }
     }
@@ -125,7 +120,7 @@ struct BugReportSheet: View {
                     UIPasteboard.general.string = composedBody()
                 } label: { Text("Copy report").frame(maxWidth: .infinity) }
                     .buttonStyle(.borderedProminent).tint(Palette.accent)
-                Button("Done") { dismiss() }.foregroundStyle(Palette.ink60)
+                Button("Done") { close() }.foregroundStyle(Palette.ink60)
             }
         }
     }

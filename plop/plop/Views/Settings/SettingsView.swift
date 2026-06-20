@@ -82,11 +82,11 @@ struct SettingsView: View {
             .blurPopup(isPresented: $showingExport) {
                 ExportSheet(transactions: transactions, categories: categories)
             }
-            .sheet(isPresented: $showingBugReport) {
+            .blurPopup(isPresented: $showingBugReport) {
                 BugReportSheet()
             }
-            .sheet(isPresented: $showingRecurring) {
-                RecurringRulesSheet { showingRecurring = false }
+            .blurPopup(isPresented: $showingRecurring) {
+                RecurringRulesSheet()
             }
         }
         .tint(Palette.accent)

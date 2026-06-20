@@ -8,7 +8,7 @@ struct RecurringRulesSheet: View {
     @Environment(\.modelContext) private var modelContext
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @State private var pendingCancel: RecurringRule?
-    var onDone: () -> Void
+    @Environment(\.blurPopupClose) private var close
 
     var body: some View {
         NavigationStack {
@@ -22,12 +22,12 @@ struct RecurringRulesSheet: View {
                     .scrollContentBackground(.hidden)
                 }
             }
-            .background(Palette.bg)
+            .background(Palette.card)
             .navigationTitle("Recurring payments")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { onDone() }
+                    Button("Done") { close() }
                 }
             }
             .confirmationDialog("Stop this recurring payment?",
@@ -94,6 +94,6 @@ struct RecurringRulesSheet: View {
 
 #if DEBUG
 #Preview {
-    RecurringRulesSheet(onDone: {}).modelContainer(SampleData.previewContainer())
+    RecurringRulesSheet().modelContainer(SampleData.previewContainer())
 }
 #endif
