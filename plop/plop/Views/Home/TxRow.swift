@@ -44,7 +44,7 @@ struct TxRow: View {
             .fill(color)
             .frame(width: 46, height: 46)
             .overlay(
-                Image(systemName: transaction.category?.symbolName ?? "questionmark")
+                CategoryIconView(category: transaction.category, fallbackSymbol: "questionmark")
                     .font(.system(size: 20))
                     .foregroundStyle(Palette.tileInk)
             )

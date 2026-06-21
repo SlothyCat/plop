@@ -154,7 +154,7 @@ struct EntryView: View {
 
             Button { pickerOpen = true } label: {
                 HStack(spacing: 6) {
-                    Image(systemName: selected?.symbolName ?? "square.grid.2x2")
+                    CategoryIconView(category: selected, fallbackSymbol: "square.grid.2x2")
                     Text(selected?.name ?? "Category")
                         .lineLimit(1)
                         .truncationMode(.tail)
