@@ -3,14 +3,18 @@
 Status: Approved (brainstorm complete) · Date: 2026-06-21
 
 Convert the two **standalone pushed** Settings screens — **Currency** and **Set budget** —
-from `NavigationLink` push to the `BlurPopup` (built in B1). Add a small `tall` option to
-`BlurPopup` so list/form content gets a height-capped, scrolling card. Presentation only —
-what each screen *does* is unchanged.
+from `NavigationLink` push to the `BlurPopup` (built in B1), **built to fully match their
+handoff screenshots** (`currency.jpg`, `budget.jpg`) in one pass. Add a small `tall`
+option to `BlurPopup` so the content gets a height-capped, scrolling card. The screens'
+*behavior* (currency write, budget save) is unchanged; their *layout* is rebuilt to match.
 
-> B2a is the first half of Cleanup B2. **B2b** (separate cycle/PR) converts the Manage
-> categories cluster (Add/Edit category + Reassign-on-delete) using stacked blur popups.
-> Deep per-screen content restyle (currency flags + filled-selected row + bottom Done,
-> budget tiles, etc.) is **Cleanup C** — out of scope here.
+> **Scope change (2026-06-21):** originally B2a was presentation-only with a deferred
+> "Cleanup C" restyle. Per the user, that produced popups that diverged too much from the
+> handoff, so the visual restyle is **folded in here** — each screen lands matching its
+> screenshot. There is no separate Cleanup C for these two.
+>
+> B2b (separate cycle/PR) still covers the Manage categories cluster (Add/Edit category +
+> Reassign), also to full handoff fidelity.
 
 Branch: `feature/dialog-popups-2`, branched off `feature/dialog-popups` so `BlurPopup`
 is present; **rebased onto `main` once B1 (PR for `feature/dialog-popups`) merges**.
@@ -28,24 +32,24 @@ budget fields still save; the budget's decimal keyboard raises the card.
   modifier. When `true`, the card is capped at ~80% of the available height (via a
   `GeometryReader`) so `List`/`Form` content scrolls inside; when `false` the B1
   hug-to-content behavior is unchanged.
-- **Currency → blur popup** — `CurrencyView` gains a fixed header (`Text("Currency")` +
-  a `Done` button calling `\.blurPopupClose`) above its existing `List`; drop
-  `.navigationTitle`. `SettingsView`'s Currency row changes from `NavigationLink` to a
-  `Button` + `.blurPopup(isPresented:tall: true)`.
-- **Set budget → blur popup** — `BudgetView` gains the same header (`Text("Set budget")`
-  + `Done`) above its existing `List`; drop `.navigationTitle`. The segmented mode picker,
-  amount fields, live total footer, and the existing **"Save budget"** button are all kept
-  (Save persists as today; Done closes). `SettingsView`'s Budget row becomes a `Button` +
-  `.blurPopup(isPresented:tall: true)`.
+- **Currency → blur popup, matching `currency.jpg`** — title + subtitle header; a
+  scrolling list of **row-cards** each showing a **flag emoji** tile, code, and full name;
+  the **selected row filled `Palette.accent`** with a checkmark; a **"Done" pinned at the
+  bottom**, centered. Adds a `currencyFlag(_:)` helper (unit-tested). `SettingsView`'s
+  Currency row → `Button` + `.blurPopup(isPresented:tall: true)`.
+- **Set budget → blur popup, matching `budget.jpg`** — accent icon-tile + title header;
+  styled segmented Total / By category with a per-mode subtitle; **category rows** with a
+  colored tile + name + a **$-prefixed field card**; a **"Total monthly budget" card**; a
+  full-width prominent **"Save budget"** button; a **"Cancel"** centered below. Save
+  persists as today. `SettingsView`'s Budget row → `Button` + `.blurPopup(tall: true)`.
+- **Currency flag emoji** — the one sanctioned emoji exception (now in CLAUDE.md).
 
 ## Out of scope
 
 - **Manage categories / Add category / Reassign** — that is **B2b**. Its row stays a
   `NavigationLink` here, so `SettingsView` keeps its `NavigationStack`.
-- **Content restyle** — currency flags, per-row cards, accent-filled selected row, the
-  subtitle line, moving Done to a centered bottom button; budget tiles / field styling.
-  All **Cleanup C**.
-- Any change to currency persistence, budget save logic, or the money formatting.
+- Any change to currency persistence, budget save logic, or the money formatting (layout
+  only).
 
 ## Key decisions (with rationale)
 
