@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 @testable import plop
 
 final class CurrencyTests: XCTestCase {
@@ -24,21 +25,23 @@ final class CurrencyTests: XCTestCase {
         XCTAssertFalse(formattedMoney(Decimal(100), currencyCode: "JPY").contains("."))
     }
 
-    func test_currencyFlag_mapsCodeToRegionFlag() {
-        XCTAssertEqual(currencyFlag("USD"), "🇺🇸")
-        XCTAssertEqual(currencyFlag("EUR"), "🇪🇺")
-        XCTAssertEqual(currencyFlag("GBP"), "🇬🇧")
-        XCTAssertEqual(currencyFlag("CHF"), "🇨🇭")
-        XCTAssertEqual(currencyFlag("JPY"), "🇯🇵")
+    func test_currencyRegionCode_mapsCodeToRegion() {
+        XCTAssertEqual(currencyRegionCode("USD"), "us")
+        XCTAssertEqual(currencyRegionCode("EUR"), "eu")
+        XCTAssertEqual(currencyRegionCode("GBP"), "gb")
+        XCTAssertEqual(currencyRegionCode("CHF"), "ch")
+        XCTAssertEqual(currencyRegionCode("JPY"), "jp")
     }
 
-    func test_currencyFlag_allChoicesNonEmpty() {
+    func test_currencyFlagAsset_namesBundledImage() {
+        XCTAssertEqual(currencyFlagAsset("USD"), "flag-us")
+        XCTAssertEqual(currencyFlagAsset("KRW"), "flag-kr")
+    }
+
+    func test_currencyFlagAsset_existsForEveryChoice() {
         for code in currencyChoices {
-            XCTAssertFalse(currencyFlag(code).isEmpty, "no flag for \(code)")
+            XCTAssertNotNil(UIImage(named: currencyFlagAsset(code)),
+                            "missing flag asset for \(code)")
         }
-    }
-
-    func test_currencyFlag_emptyForBadCode() {
-        XCTAssertEqual(currencyFlag("1"), "")
     }
 }

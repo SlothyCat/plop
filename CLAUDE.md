@@ -44,8 +44,10 @@ Three modal dialogs: Google Sheets export, add category, bug reporting.
   - `#FFF9D2`, `#FFEBCC`, `#BFDDF0`, `#8CC0EB`
   - Text: charcoal `~#2A2A2A` for contrast.
 - **No emoji.** **No decorative SVG art.** **No filler/sample data** in shipped UI.
-  - *Exception:* country **flag emoji** are allowed in the currency picker rows (they
-    convey the currency, not decoration). This is the only sanctioned emoji use.
+  - *Exception:* **country flags in the currency picker rows** (they convey the currency,
+    not decoration). Implemented as bundled `flag-icons` square SVGs in the asset catalog
+    (`flag-<region>`, e.g. `flag-us`; MIT-licensed, public-domain flags), matching the
+    handoff — not emoji. This is the only sanctioned flag/art exception.
 - Keep the visual language clean and restrained.
 - **Match the handoff.** `design_handoff_plop/screenshots/*.jpg` is the visual source of
   truth. Before building any screen/dialog and again when verifying it, READ the matching

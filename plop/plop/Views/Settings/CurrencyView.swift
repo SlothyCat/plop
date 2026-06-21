@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Picks the app-wide display currency (no conversion). Matches the handoff Currency popup.
 struct CurrencyView: View {
@@ -40,11 +41,10 @@ struct CurrencyView: View {
     private func row(_ code: String) -> some View {
         let on = code == currencyCode
         return HStack(spacing: 13) {
-            Text(currencyFlag(code))
-                .font(.system(size: 22))
-                .frame(width: 44, height: 44)
-                .background(.white, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Palette.ink12, lineWidth: 1))
+            flag(code)
+                .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 11).stroke(Palette.ink12, lineWidth: 1))
             VStack(alignment: .leading, spacing: 1) {
                 Text(code)
                     .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
@@ -62,6 +62,17 @@ struct CurrencyView: View {
                     in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 16)
             .stroke(on ? Color.clear : Palette.ink12, lineWidth: 1))
+    }
+
+    @ViewBuilder private func flag(_ code: String) -> some View {
+        if UIImage(named: currencyFlagAsset(code)) != nil {
+            Image(currencyFlagAsset(code)).resizable().scaledToFill()
+        } else {
+            Text(currencySymbol(code))
+                .font(.system(size: 15, weight: .bold)).foregroundStyle(Palette.tileInk)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Palette.card)
+        }
     }
 
     private var doneBar: some View {
