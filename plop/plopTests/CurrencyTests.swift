@@ -23,4 +23,22 @@ final class CurrencyTests: XCTestCase {
     func test_money_jpyHasNoDecimals() {
         XCTAssertFalse(formattedMoney(Decimal(100), currencyCode: "JPY").contains("."))
     }
+
+    func test_currencyFlag_mapsCodeToRegionFlag() {
+        XCTAssertEqual(currencyFlag("USD"), "🇺🇸")
+        XCTAssertEqual(currencyFlag("EUR"), "🇪🇺")
+        XCTAssertEqual(currencyFlag("GBP"), "🇬🇧")
+        XCTAssertEqual(currencyFlag("CHF"), "🇨🇭")
+        XCTAssertEqual(currencyFlag("JPY"), "🇯🇵")
+    }
+
+    func test_currencyFlag_allChoicesNonEmpty() {
+        for code in currencyChoices {
+            XCTAssertFalse(currencyFlag(code).isEmpty, "no flag for \(code)")
+        }
+    }
+
+    func test_currencyFlag_emptyForBadCode() {
+        XCTAssertEqual(currencyFlag("1"), "")
+    }
 }

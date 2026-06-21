@@ -16,6 +16,20 @@ func currencyDisplayName(_ code: String) -> String {
     Locale.current.localizedString(forCurrencyCode: code) ?? code
 }
 
+/// Flag emoji for a currency code (first two letters = region: USD→🇺🇸, EUR→🇪🇺, CHF→🇨🇭).
+/// Returns "" if the code doesn't yield two A–Z letters.
+func currencyFlag(_ code: String) -> String {
+    let region = code.prefix(2).uppercased()
+    guard region.count == 2 else { return "" }
+    var flag = ""
+    for scalar in region.unicodeScalars {
+        guard scalar.value >= 65, scalar.value <= 90,
+              let indicator = Unicode.Scalar(0x1F1E6 + scalar.value - 65) else { return "" }
+        flag.unicodeScalars.append(indicator)
+    }
+    return flag
+}
+
 func currencySymbol(_ code: String) -> String {
     let formatter = NumberFormatter()
     formatter.numberStyle = .currency
