@@ -7,11 +7,12 @@ import SwiftUI
 extension View {
     func blurPopup<Card: View>(
         isPresented: Binding<Bool>,
+        tall: Bool = false,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder card: @escaping () -> Card
     ) -> some View {
         fullScreenCover(isPresented: isPresented, onDismiss: onDismiss) {
-            BlurPopupContainer(isPresented: isPresented, card: card)
+            BlurPopupContainer(isPresented: isPresented, tall: tall, card: card)
                 .presentationBackground(.clear)
         }
         .transaction { $0.disablesAnimations = true }   // suppress the cover's own slide
@@ -33,6 +34,7 @@ extension EnvironmentValues {
 
 private struct BlurPopupContainer<Card: View>: View {
     @Binding var isPresented: Bool
+    var tall: Bool
     @ViewBuilder var card: () -> Card
 
     @State private var shown = false
@@ -42,25 +44,28 @@ private struct BlurPopupContainer<Card: View>: View {
     private let outDelay = 0.34
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .overlay(Color.black.opacity(0.18))
-                .ignoresSafeArea()
-                .opacity(shown ? 1 : 0)
-                .contentShape(Rectangle())
-                .onTapGesture { close() }
+        GeometryReader { proxy in
+            ZStack(alignment: .bottom) {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .overlay(Color.black.opacity(0.18))
+                    .ignoresSafeArea()
+                    .opacity(shown ? 1 : 0)
+                    .contentShape(Rectangle())
+                    .onTapGesture { close() }
 
-            card()
-                .frame(maxWidth: .infinity)
-                .background(Palette.card,
-                            in: RoundedRectangle(cornerRadius: 26, style: .continuous))
-                .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-                .padding(.horizontal, 12)
-                .padding(.bottom, 12)
-                .offset(y: shown ? drag : 1000)
-                .gesture(dragToDismiss)
-                .environment(\.blurPopupClose, close)
+                card()
+                    .frame(maxWidth: .infinity,
+                           maxHeight: tall ? proxy.size.height * 0.8 : nil)
+                    .background(Palette.card,
+                                in: RoundedRectangle(cornerRadius: 26, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 12)
+                    .offset(y: shown ? drag : 1000)
+                    .gesture(dragToDismiss)
+                    .environment(\.blurPopupClose, close)
+            }
         }
         .onAppear { withAnimation(anim) { shown = true } }
     }
