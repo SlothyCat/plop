@@ -91,7 +91,7 @@ struct SettingsView: View {
             .blurPopup(isPresented: $showingBugReport) {
                 BugReportSheet()
             }
-            .blurPopup(isPresented: $showingRecurring) {
+            .blurPopup(isPresented: $showingRecurring, tall: true) {
                 RecurringRulesSheet()
             }
             .blurPopup(isPresented: $showingBudget) {

@@ -11,12 +11,13 @@ struct TabBarView: View {
 
     var body: some View {
         ZStack {
-            HStack {
+            HStack(spacing: 0) {
                 tabButton(.insights, systemImage: "chart.bar.fill", label: "Insights")
-                Spacer()
+                    .frame(maxWidth: .infinity)
+                Color.clear.frame(width: 84)
                 tabButton(.settings, systemImage: "gearshape.fill", label: "Settings")
+                    .frame(maxWidth: .infinity)
             }
-            .padding(.horizontal, 44)
             .padding(.top, 10)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
