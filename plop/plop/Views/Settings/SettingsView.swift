@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var showingRecurring = false
     @State private var showingBudget = false
     @State private var showingCurrency = false
+    @State private var showingManage = false
 
     var body: some View {
         NavigationStack {
@@ -35,10 +36,11 @@ struct SettingsView: View {
                                     title: "Set budget", value: budgetSummary, showsChevron: false)
                     }
                     .buttonStyle(.plain)
-                    NavigationLink { ManageCategoriesView() } label: {
+                    Button { showingManage = true } label: {
                         SettingsRow(tile: Palette.accentSoft, systemImage: "tag.fill",
                                     title: "Manage categories", showsChevron: false)
                     }
+                    .buttonStyle(.plain)
                     Button { showingCurrency = true } label: {
                         SettingsRow(tile: Palette.cream, systemImage: "dollarsign.circle.fill",
                                     title: "Currency", value: currencyCode, showsChevron: false)
@@ -97,6 +99,9 @@ struct SettingsView: View {
             }
             .blurPopup(isPresented: $showingCurrency, tall: true) {
                 CurrencyView()
+            }
+            .blurPopup(isPresented: $showingManage, tall: true) {
+                ManageCategoriesView()
             }
         }
         .tint(Palette.accent)
