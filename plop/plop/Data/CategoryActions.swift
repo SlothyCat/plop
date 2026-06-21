@@ -4,9 +4,9 @@ import SwiftData
 /// The single locus for category mutations (mirrors TransactionActions).
 enum CategoryActions {
     @discardableResult
-    static func add(name: String, symbolName: String, colorHex: String,
+    static func add(name: String, symbolName: String, emoji: String = "", colorHex: String,
                     budget: Decimal = 0, in context: ModelContext) -> ExpenseCategory {
-        let category = ExpenseCategory(name: name, symbolName: symbolName,
+        let category = ExpenseCategory(name: name, symbolName: symbolName, emoji: emoji,
                                        colorHex: colorHex, budget: budget)
         context.insert(category)
         return category
@@ -18,9 +18,10 @@ enum CategoryActions {
     }
 
     static func update(_ category: ExpenseCategory, name: String, symbolName: String,
-                       colorHex: String, budget: Decimal) {
+                       emoji: String, colorHex: String, budget: Decimal) {
         category.name = name
         category.symbolName = symbolName
+        category.emoji = emoji
         category.colorHex = colorHex
         category.budget = budget
     }

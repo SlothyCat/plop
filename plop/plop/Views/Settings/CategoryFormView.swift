@@ -138,7 +138,7 @@ struct CategoryFormView: View {
         let budget = parseBudgetAmount(budgetField)
         if let editing {
             CategoryActions.update(editing, name: trimmed, symbolName: symbolName,
-                                   colorHex: colorHex, budget: budget)
+                                   emoji: editing.emoji, colorHex: colorHex, budget: budget)
             onSave?(editing)
         } else {
             let created = CategoryActions.add(name: trimmed, symbolName: symbolName,
