@@ -23,17 +23,10 @@ struct DonutChart<Center: View>: View {
                 .animation(.easeIn(duration: fade), value: animate)
 
             ForEach(slices) { slice in
-                Circle()
-                    .trim(from: slice.start, to: animate ? slice.end : slice.start)
-                    .stroke(Color(hex: slice.colorHex),
-                            style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-                    .opacity(animate ? 1 : 0)
-                    .animation(
-                        .linear(duration: max(0.0001, (slice.end - slice.start) * sweep))
-                            .delay(fade + slice.start * sweep),
-                        value: animate
-                    )
+                ZStack {
+                    arc(slice, color: Palette.ink, width: lineWidth + 2.5)
+                    arc(slice, color: Color(hex: slice.colorHex), width: lineWidth)
+                }
             }
 
             center()
@@ -41,6 +34,19 @@ struct DonutChart<Center: View>: View {
         .frame(width: size, height: size)
         .onAppear { replay() }
         .onChange(of: animationKey) { _, _ in replay() }
+    }
+
+    private func arc(_ slice: DonutSlice, color: Color, width: CGFloat) -> some View {
+        Circle()
+            .trim(from: slice.start, to: animate ? slice.end : slice.start)
+            .stroke(color, style: StrokeStyle(lineWidth: width, lineCap: .round))
+            .rotationEffect(.degrees(-90))
+            .opacity(animate ? 1 : 0)
+            .animation(
+                .linear(duration: max(0.0001, (slice.end - slice.start) * sweep))
+                    .delay(fade + slice.start * sweep),
+                value: animate
+            )
     }
 
     /// Reset to hidden WITHOUT animating the reverse, then draw forward.
