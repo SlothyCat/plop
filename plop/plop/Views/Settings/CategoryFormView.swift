@@ -100,7 +100,8 @@ struct CategoryFormView: View {
     private func save() {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         if let editing {
-            CategoryActions.update(editing, name: trimmed, symbolName: symbolName, colorHex: colorHex)
+            CategoryActions.update(editing, name: trimmed, symbolName: symbolName,
+                                   colorHex: colorHex, budget: editing.budget)
             onSave?(editing)
         } else {
             let created = CategoryActions.add(name: trimmed, symbolName: symbolName, colorHex: colorHex, in: modelContext)

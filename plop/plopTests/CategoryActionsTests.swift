@@ -23,12 +23,14 @@ final class CategoryActionsTests: XCTestCase {
         let cat = ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC")
         ctx.insert(cat)
 
-        CategoryActions.update(cat, name: "Groceries", symbolName: "cart.fill", colorHex: "#8CC0EB")
+        CategoryActions.update(cat, name: "Groceries", symbolName: "cart.fill",
+                               colorHex: "#8CC0EB", budget: 250)
         try ctx.save()
 
         XCTAssertEqual(cat.name, "Groceries")
         XCTAssertEqual(cat.symbolName, "cart.fill")
         XCTAssertEqual(cat.colorHex, "#8CC0EB")
+        XCTAssertEqual(cat.budget, 250)
     }
 
     func test_add_returnsInsertedCategory() throws {
@@ -37,6 +39,24 @@ final class CategoryActionsTests: XCTestCase {
         let created = CategoryActions.add(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC", in: ctx)
         XCTAssertEqual(created.name, "Food")
         XCTAssertEqual(try ctx.fetch(FetchDescriptor<ExpenseCategory>()).count, 1)
+    }
+
+    func test_add_persistsBudget() throws {
+        let container = try makeInMemoryContainer()
+        let ctx = container.mainContext
+        let created = CategoryActions.add(name: "Food", symbolName: "fork.knife",
+                                          colorHex: "#FFEBCC", budget: 300, in: ctx)
+        XCTAssertEqual(created.budget, 300)
+        try ctx.save()
+        XCTAssertEqual(try ctx.fetch(FetchDescriptor<ExpenseCategory>()).first?.budget, 300)
+    }
+
+    func test_add_defaultsBudgetToZero() throws {
+        let container = try makeInMemoryContainer()
+        let ctx = container.mainContext
+        let created = CategoryActions.add(name: "Food", symbolName: "fork.knife",
+                                          colorHex: "#FFEBCC", in: ctx)
+        XCTAssertEqual(created.budget, 0)
     }
 
     func test_delete_removesEmptyCategory() throws {
