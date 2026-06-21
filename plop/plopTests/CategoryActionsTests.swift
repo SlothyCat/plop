@@ -22,6 +22,26 @@ final class CategoryActionsTests: XCTestCase {
         XCTAssertEqual(cat.emoji, "")
     }
 
+    func test_add_persistsEmoji() throws {
+        let container = try makeInMemoryContainer()
+        let ctx = container.mainContext
+        let created = CategoryActions.add(name: "Fun", symbolName: "tag.fill", emoji: "🎉",
+                                          colorHex: "#BFDDF0", in: ctx)
+        XCTAssertEqual(created.emoji, "🎉")
+        try ctx.save()
+        XCTAssertEqual(try ctx.fetch(FetchDescriptor<ExpenseCategory>()).first?.emoji, "🎉")
+    }
+
+    func test_update_setsEmoji() throws {
+        let container = try makeInMemoryContainer()
+        let ctx = container.mainContext
+        let cat = ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC")
+        ctx.insert(cat)
+        CategoryActions.update(cat, name: "Food", symbolName: "fork.knife",
+                               emoji: "🍔", colorHex: "#FFEBCC", budget: 0)
+        XCTAssertEqual(cat.emoji, "🍔")
+    }
+
     func test_update_mutatesFields() throws {
         let container = try makeInMemoryContainer()
         let ctx = container.mainContext
@@ -29,7 +49,7 @@ final class CategoryActionsTests: XCTestCase {
         ctx.insert(cat)
 
         CategoryActions.update(cat, name: "Groceries", symbolName: "cart.fill",
-                               colorHex: "#8CC0EB", budget: 250)
+                               emoji: "", colorHex: "#8CC0EB", budget: 250)
         try ctx.save()
 
         XCTAssertEqual(cat.name, "Groceries")

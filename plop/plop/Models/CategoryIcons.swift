@@ -10,3 +10,9 @@ let categoryIconChoices: [String] = [
     "graduationcap.fill", "gift.fill", "pawprint.fill", "tshirt.fill",
     "creditcard.fill", "dollarsign.circle.fill", "tag.fill", "ellipsis.circle.fill",
 ]
+
+/// Curated emoji offered when creating/editing a category (Emoji mode).
+let categoryEmojiChoices: [String] = [
+    "🎓", "🍔", "📺", "🚗", "🏠", "✈️", "🛒", "💡", "🐶",
+    "💪", "🎁", "💰", "☕", "🎮", "👕", "💊", "🎵", "🧾",
+]
