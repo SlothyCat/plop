@@ -26,10 +26,6 @@ struct ReassignCategorySheet: View {
                     .readHeight(into: $listHeight)
             }
             .frame(maxHeight: scrollCap)
-            Button("Cancel") { close() }
-                .font(.system(size: 16, weight: .medium)).foregroundStyle(Palette.ink60)
-                .frame(maxWidth: .infinity).padding(.vertical, 16)
-                .overlay(Rectangle().fill(Palette.hair).frame(height: 1), alignment: .top)
         }
     }
 

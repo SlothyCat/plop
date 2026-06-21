@@ -26,11 +26,6 @@ struct AppearanceSheet: View {
                 }
             }
 
-            Button("Done") { close() }
-                .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(Palette.ink)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 4)
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)

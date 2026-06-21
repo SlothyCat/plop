@@ -48,17 +48,8 @@ struct ManageCategoriesView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text("Categories")
-                    .font(.system(size: 24, weight: .bold)).foregroundStyle(Palette.ink)
-                Spacer()
-                Button { close() } label: {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 14, weight: .bold)).foregroundStyle(Palette.ink60)
-                        .frame(width: 32, height: 32).background(Palette.field, in: Circle())
-                }
-                .buttonStyle(.plain)
-            }
+            Text("Categories")
+                .font(.system(size: 24, weight: .bold)).foregroundStyle(Palette.ink)
             Text("Tap a category to edit it, or remove ones you don't use.")
                 .font(.system(size: 15)).foregroundStyle(Palette.ink60)
                 .fixedSize(horizontal: false, vertical: true)

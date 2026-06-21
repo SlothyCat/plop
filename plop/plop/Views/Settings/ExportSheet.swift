@@ -82,7 +82,6 @@ struct ExportSheet: View {
                     Text("Export").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent).tint(Palette.accent)
-                Button("Cancel") { close() }.foregroundStyle(Palette.ink60)
             }
         }
     }
@@ -106,7 +105,6 @@ struct ExportSheet: View {
                 Label("Open in Google Sheets", systemImage: "arrow.up.right.square")
             }
             .buttonStyle(.borderedProminent).tint(Palette.accent)
-            Button("Done") { close() }.foregroundStyle(Palette.ink60)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)

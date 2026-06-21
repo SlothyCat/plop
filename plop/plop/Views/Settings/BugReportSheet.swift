@@ -69,7 +69,6 @@ struct BugReportSheet: View {
                 Button { send() } label: { Text("Send").frame(maxWidth: .infinity) }
                     .buttonStyle(.borderedProminent).tint(Palette.accent)
                     .disabled(!canSend)
-                Button("Cancel") { close() }.foregroundStyle(Palette.ink60)
             }
         }
     }
@@ -120,7 +119,6 @@ struct BugReportSheet: View {
                     UIPasteboard.general.string = composedBody()
                 } label: { Text("Copy report").frame(maxWidth: .infinity) }
                     .buttonStyle(.borderedProminent).tint(Palette.accent)
-                Button("Done") { close() }.foregroundStyle(Palette.ink60)
             }
         }
     }

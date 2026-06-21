@@ -30,7 +30,6 @@ struct RecurringRulesSheet: View {
                 }
                 .frame(maxHeight: scrollCap)
             }
-            doneBar
         }
         .confirmationDialog("Stop this recurring payment?",
                             isPresented: cancelDialogBinding,
@@ -84,13 +83,6 @@ struct RecurringRulesSheet: View {
         .padding(.horizontal, 10).padding(.vertical, 9)
         .background(Palette.field, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.ink12, lineWidth: 1))
-    }
-
-    private var doneBar: some View {
-        Button("Done") { close() }
-            .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
-            .frame(maxWidth: .infinity).padding(.vertical, 16)
-            .overlay(Rectangle().fill(Palette.hair).frame(height: 1), alignment: .top)
     }
 
     private var emptyState: some View {

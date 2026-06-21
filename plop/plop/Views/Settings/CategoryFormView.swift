@@ -86,9 +86,6 @@ struct CategoryFormView: View {
                                     in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 }
                 .buttonStyle(.plain).disabled(!canSave)
-                Button("Cancel") { close() }
-                    .font(.system(size: 16, weight: .medium)).foregroundStyle(Palette.ink60)
-                    .frame(maxWidth: .infinity).padding(.vertical, 8)
             }
             .padding(.top, 2)
         }
