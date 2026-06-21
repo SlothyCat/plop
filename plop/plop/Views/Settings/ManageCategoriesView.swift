@@ -71,7 +71,7 @@ struct ManageCategoriesView: View {
         HStack(spacing: 12) {
             Button { editing = c } label: {
                 HStack(spacing: 12) {
-                    Image(systemName: c.symbolName)
+                    CategoryIconView(category: c)
                         .font(.system(size: 18)).foregroundStyle(Palette.tileInk)
                         .frame(width: 38, height: 38)
                         .background(Color(hex: c.colorHex),

@@ -52,7 +52,7 @@ struct CategoryPickerSheet: View {
     private func tile(_ category: ExpenseCategory) -> some View {
         let isOn = selected?.persistentModelID == category.persistentModelID
         return HStack(spacing: 11) {
-            Image(systemName: category.symbolName)
+            CategoryIconView(category: category)
                 .foregroundStyle(Palette.tileInk)
                 .frame(width: 34, height: 34)
                 .background(Color(hex: category.colorHex), in: RoundedRectangle(cornerRadius: 10))

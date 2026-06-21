@@ -60,7 +60,7 @@ struct RecurringRulesSheet: View {
 
     private func row(_ rule: RecurringRule) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: rule.category?.symbolName ?? "arrow.triangle.2.circlepath")
+            CategoryIconView(category: rule.category, fallbackSymbol: "arrow.triangle.2.circlepath")
                 .font(.system(size: 16)).foregroundStyle(Palette.tileInk)
                 .frame(width: 38, height: 38)
                 .background(rule.category.map { Color(hex: $0.colorHex) } ?? Palette.accentSoft,

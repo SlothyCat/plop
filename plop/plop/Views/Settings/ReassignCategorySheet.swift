@@ -53,7 +53,7 @@ struct ReassignCategorySheet: View {
             close()
         } label: {
             HStack(spacing: 12) {
-                Image(systemName: target.symbolName)
+                CategoryIconView(category: target)
                     .font(.system(size: 16)).foregroundStyle(Palette.tileInk)
                     .frame(width: 34, height: 34)
                     .background(Color(hex: target.colorHex),

@@ -105,7 +105,7 @@ struct BudgetView: View {
 
     private func categoryRow(_ cat: ExpenseCategory) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: cat.symbolName)
+            CategoryIconView(category: cat)
                 .font(.system(size: 18)).foregroundStyle(Palette.tileInk)
                 .frame(width: 38, height: 38)
                 .background(Color(hex: cat.colorHex),

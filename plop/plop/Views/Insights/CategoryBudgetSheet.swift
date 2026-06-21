@@ -13,7 +13,7 @@ struct CategoryBudgetSheet: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack(spacing: 12) {
-                Image(systemName: category.symbolName)
+                CategoryIconView(category: category)
                     .font(.system(size: 20))
                     .foregroundStyle(Palette.tileInk)
                     .frame(width: 42, height: 42)
