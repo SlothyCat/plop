@@ -14,7 +14,7 @@ struct InsightsView: View {
     @State private var mode: InsightsMode = .breakdown
     @State private var editing: ExpenseCategory?
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
-    private let sectionGap: CGFloat = 28
+    private let sectionGap: CGFloat = 36
 
     var body: some View {
         let range = period.range(containing: .now, calendar: .current)
@@ -24,10 +24,12 @@ struct InsightsView: View {
             header
             modeToggle
             ScrollView {
-                if mode == .breakdown {
-                    breakdown(spend)
-                } else {
-                    budget(spend)
+                VStack(spacing: 0) {
+                    if mode == .breakdown {
+                        breakdown(spend)
+                    } else {
+                        budget(spend)
+                    }
                 }
             }
             .padding(.bottom, 120)
