@@ -32,6 +32,27 @@ extension EnvironmentValues {
     }
 }
 
+/// Reports a view's height into a binding. Used to self-size a popup's scroll region to its
+/// content: cap the `ScrollView` at this height so a tall popup shrinks to short content but
+/// still scrolls (clipped by the card's own max height) when content is long.
+private struct PopupHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
+extension View {
+    func readHeight(into binding: Binding<CGFloat>) -> some View {
+        background(
+            GeometryReader { geo in
+                Color.clear.preference(key: PopupHeightKey.self, value: geo.size.height)
+            }
+        )
+        .onPreferenceChange(PopupHeightKey.self) { binding.wrappedValue = $0 }
+    }
+}
+
 private struct BlurPopupContainer<Card: View>: View {
     @Binding var isPresented: Bool
     var tall: Bool

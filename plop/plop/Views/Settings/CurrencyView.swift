@@ -4,6 +4,7 @@ import SwiftUI
 struct CurrencyView: View {
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @Environment(\.blurPopupClose) private var close
+    @State private var listHeight: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -17,7 +18,9 @@ struct CurrencyView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 4)
+                .readHeight(into: $listHeight)
             }
+            .frame(maxHeight: listHeight == 0 ? nil : listHeight)
             doneBar
         }
     }

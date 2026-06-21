@@ -13,6 +13,7 @@ struct BudgetView: View {
 
     @State private var generalField = ""
     @State private var catFields: [PersistentIdentifier: String] = [:]
+    @State private var listHeight: CGFloat = 0
 
     private var mode: BudgetMode { BudgetMode(rawValue: modeRaw) ?? .category }
 
@@ -43,7 +44,9 @@ struct BudgetView: View {
                     }
                 }
                 .padding(.horizontal, 20).padding(.vertical, 14)
+                .readHeight(into: $listHeight)
             }
+            .frame(maxHeight: listHeight == 0 ? nil : listHeight)
 
             footer
         }
@@ -114,7 +117,7 @@ struct BudgetView: View {
             Button("Cancel") { close() }
                 .font(.system(size: 16, weight: .medium)).foregroundStyle(Palette.ink60)
         }
-        .padding(.horizontal, 20).padding(.top, 6).padding(.bottom, 14)
+        .padding(.horizontal, 20).padding(.top, 6).padding(.bottom, 24)
     }
 
     private func bindingFor(_ cat: ExpenseCategory) -> Binding<String> {
