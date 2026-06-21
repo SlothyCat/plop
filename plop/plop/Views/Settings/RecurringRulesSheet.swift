@@ -7,9 +7,15 @@ struct RecurringRulesSheet: View {
     @Query(sort: \RecurringRule.createdAt) private var rules: [RecurringRule]
     @Environment(\.modelContext) private var modelContext
     @Environment(\.blurPopupClose) private var close
+    @Environment(\.blurPopupMaxHeight) private var maxHeight
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @State private var pendingCancel: RecurringRule?
     @State private var listHeight: CGFloat = 0
+
+    private var scrollCap: CGFloat {
+        let ceiling = maxHeight.isFinite ? maxHeight * 0.7 : 100_000
+        return listHeight == 0 ? ceiling : min(listHeight, ceiling)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,7 +28,7 @@ struct RecurringRulesSheet: View {
                         .padding(.horizontal, 20).padding(.vertical, 4)
                         .readHeight(into: $listHeight)
                 }
-                .frame(maxHeight: listHeight == 0 ? nil : listHeight)
+                .frame(maxHeight: scrollCap)
             }
             doneBar
         }

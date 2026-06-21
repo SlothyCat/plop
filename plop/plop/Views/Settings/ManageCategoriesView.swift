@@ -8,12 +8,18 @@ struct ManageCategoriesView: View {
     @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
     @Environment(\.modelContext) private var modelContext
     @Environment(\.blurPopupClose) private var close
+    @Environment(\.blurPopupMaxHeight) private var maxHeight
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @State private var editing: ExpenseCategory?
     @State private var showingAdd = false
     @State private var reassigning: ExpenseCategory?
     @State private var showLastCategoryAlert = false
     @State private var listHeight: CGFloat = 0
+
+    private var scrollCap: CGFloat {
+        let ceiling = maxHeight.isFinite ? maxHeight * 0.7 : 100_000
+        return listHeight == 0 ? ceiling : min(listHeight, ceiling)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -23,7 +29,7 @@ struct ManageCategoriesView: View {
                     .padding(.horizontal, 20).padding(.vertical, 4)
                     .readHeight(into: $listHeight)
             }
-            .frame(maxHeight: listHeight == 0 ? nil : listHeight)
+            .frame(maxHeight: scrollCap)
             addButton
         }
         .blurPopup(item: $editing) { CategoryFormView(editing: $0) }

@@ -8,8 +8,14 @@ struct ReassignCategorySheet: View {
     let targets: [ExpenseCategory]
 
     @Environment(\.blurPopupClose) private var close
+    @Environment(\.blurPopupMaxHeight) private var maxHeight
     @Environment(\.modelContext) private var modelContext
     @State private var listHeight: CGFloat = 0
+
+    private var scrollCap: CGFloat {
+        let ceiling = maxHeight.isFinite ? maxHeight * 0.7 : 100_000
+        return listHeight == 0 ? ceiling : min(listHeight, ceiling)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -19,7 +25,7 @@ struct ReassignCategorySheet: View {
                     .padding(.horizontal, 20).padding(.vertical, 4)
                     .readHeight(into: $listHeight)
             }
-            .frame(maxHeight: listHeight == 0 ? nil : listHeight)
+            .frame(maxHeight: scrollCap)
             Button("Cancel") { close() }
                 .font(.system(size: 16, weight: .medium)).foregroundStyle(Palette.ink60)
                 .frame(maxWidth: .infinity).padding(.vertical, 16)
