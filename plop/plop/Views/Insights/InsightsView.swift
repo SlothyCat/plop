@@ -14,6 +14,7 @@ struct InsightsView: View {
     @State private var mode: InsightsMode = .breakdown
     @State private var editing: ExpenseCategory?
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
+    private let sectionGap: CGFloat = 28
 
     var body: some View {
         let range = period.range(containing: .now, calendar: .current)
@@ -58,7 +59,8 @@ struct InsightsView: View {
             Text("Budget").tag(InsightsMode.budget)
         }
         .pickerStyle(.segmented)
-        .padding(.horizontal, 22)
+        .frame(maxWidth: 280)
+        .frame(maxWidth: .infinity)
         .padding(.top, 12)
     }
 
@@ -78,16 +80,17 @@ struct InsightsView: View {
                     .foregroundStyle(Palette.ink)
             }
         }
-        .padding(.vertical, 26)
+        .padding(.top, sectionGap)
 
         if spend.isEmpty {
             Text("No spending \(period == .year ? "this year" : "this month").")
                 .font(.system(size: 15))
                 .foregroundStyle(Palette.ink40)
-                .padding(.top, 30)
+                .padding(.top, sectionGap)
         } else {
             SpendLegend(spend: spend, total: total)
                 .padding(.horizontal, 18)
+                .padding(.top, sectionGap)
         }
     }
 
@@ -102,7 +105,7 @@ struct InsightsView: View {
         DonutChart(slices: budgetDonutSlices(summary), animationKey: key) {
             budgetCenter(summary)
         }
-        .padding(.vertical, 26)
+        .padding(.top, sectionGap)
 
         if summary.totalBudget == 0 {
             Text("Set a budget to track your progress.")
@@ -110,7 +113,7 @@ struct InsightsView: View {
                 .foregroundStyle(Palette.ink40)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
-                .padding(.top, 8)
+                .padding(.top, sectionGap)
             if budgetFlavour == .category && !summary.rows.isEmpty {
                 BudgetLegend(summary: summary, flavour: budgetFlavour, onEdit: edit)
                     .padding(.horizontal, 18)
@@ -120,6 +123,7 @@ struct InsightsView: View {
             Text(spentOfBudget(summary))
                 .font(.system(size: 13.5))
                 .foregroundStyle(Palette.ink40)
+                .padding(.top, sectionGap)
                 .padding(.bottom, 6)
             BudgetLegend(summary: summary, flavour: budgetFlavour, onEdit: edit)
                 .padding(.horizontal, 18)
