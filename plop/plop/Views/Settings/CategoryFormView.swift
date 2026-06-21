@@ -18,7 +18,16 @@ struct CategoryFormView: View {
     @State private var budgetField = ""
 
     private let swatches = ["#8CC0EB", "#BFDDF0", "#FFEBCC", "#FFF9D2"]
-    private let iconColumns = [GridItem(.adaptive(minimum: 50), spacing: 10)]
+    private let iconsPerRow = 5
+
+    /// Icons chunked into fixed rows. Rendered eagerly (not LazyVGrid): a lazy grid in a
+    /// non-scrolling popup card snaps its cells to final positions instead of sliding with
+    /// the card on present.
+    private var iconRows: [[String]] {
+        stride(from: 0, to: categoryIconChoices.count, by: iconsPerRow).map {
+            Array(categoryIconChoices[$0 ..< min($0 + iconsPerRow, categoryIconChoices.count)])
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -37,8 +46,15 @@ struct CategoryFormView: View {
                     .overlay(RoundedRectangle(cornerRadius: 13).stroke(Palette.ink12, lineWidth: 1))
             }
             field("ICON") {
-                LazyVGrid(columns: iconColumns, spacing: 10) {
-                    ForEach(categoryIconChoices, id: \.self) { iconButton($0) }
+                VStack(spacing: 10) {
+                    ForEach(iconRows, id: \.self) { row in
+                        HStack(spacing: 10) {
+                            ForEach(row, id: \.self) { iconButton($0).frame(maxWidth: .infinity) }
+                            ForEach(0 ..< (iconsPerRow - row.count), id: \.self) { _ in
+                                Color.clear.frame(maxWidth: .infinity, maxHeight: 1)
+                            }
+                        }
+                    }
                 }
             }
             field("COLOR") {

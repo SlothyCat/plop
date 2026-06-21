@@ -104,6 +104,7 @@ private struct BlurPopupContainer<Card: View>: View {
                     .padding(.horizontal, 12)
                     .padding(.bottom, 12)
                     .offset(y: shown ? drag : 1000)
+                    .opacity(shown ? 1 : 0)   // gate visibility so content never paints pre-slide
                     .gesture(dragToDismiss)
                     .environment(\.blurPopupClose, close)
                     .environment(\.blurPopupMaxHeight, tall ? proxy.size.height : .infinity)
