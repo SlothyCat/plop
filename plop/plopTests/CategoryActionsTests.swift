@@ -7,7 +7,8 @@ final class CategoryActionsTests: XCTestCase {
     func test_add_insertsCategory() throws {
         let container = try makeInMemoryContainer()
         let ctx = container.mainContext
-        CategoryActions.add(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC", in: ctx)
+        CategoryActions.add(CategoryDraft(name: "Food", symbolName: "fork.knife",
+                                          colorHex: "#FFEBCC"), in: ctx)
         try ctx.save()
 
         let cats = try ctx.fetch(FetchDescriptor<ExpenseCategory>())
@@ -25,8 +26,9 @@ final class CategoryActionsTests: XCTestCase {
     func test_add_persistsEmoji() throws {
         let container = try makeInMemoryContainer()
         let ctx = container.mainContext
-        let created = CategoryActions.add(name: "Fun", symbolName: "tag.fill", emoji: "🎉",
-                                          colorHex: "#BFDDF0", in: ctx)
+        let created = CategoryActions.add(
+            CategoryDraft(name: "Fun", symbolName: "tag.fill", emoji: "🎉", colorHex: "#BFDDF0"),
+            in: ctx)
         XCTAssertEqual(created.emoji, "🎉")
         try ctx.save()
         XCTAssertEqual(try ctx.fetch(FetchDescriptor<ExpenseCategory>()).first?.emoji, "🎉")
@@ -37,8 +39,9 @@ final class CategoryActionsTests: XCTestCase {
         let ctx = container.mainContext
         let cat = ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC")
         ctx.insert(cat)
-        CategoryActions.update(cat, name: "Food", symbolName: "fork.knife",
-                               emoji: "🍔", colorHex: "#FFEBCC", budget: 0)
+        let draft = CategoryDraft(name: "Food", symbolName: "fork.knife", emoji: "🍔",
+                                  colorHex: "#FFEBCC")
+        CategoryActions.update(cat, with: draft)
         XCTAssertEqual(cat.emoji, "🍔")
     }
 
@@ -48,8 +51,9 @@ final class CategoryActionsTests: XCTestCase {
         let cat = ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC")
         ctx.insert(cat)
 
-        CategoryActions.update(cat, name: "Groceries", symbolName: "cart.fill",
-                               emoji: "", colorHex: "#8CC0EB", budget: 250)
+        let draft = CategoryDraft(name: "Groceries", symbolName: "cart.fill",
+                                  colorHex: "#8CC0EB", budget: 250)
+        CategoryActions.update(cat, with: draft)
         try ctx.save()
 
         XCTAssertEqual(cat.name, "Groceries")
@@ -61,7 +65,8 @@ final class CategoryActionsTests: XCTestCase {
     func test_add_returnsInsertedCategory() throws {
         let container = try makeInMemoryContainer()
         let ctx = container.mainContext
-        let created = CategoryActions.add(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC", in: ctx)
+        let created = CategoryActions.add(
+            CategoryDraft(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC"), in: ctx)
         XCTAssertEqual(created.name, "Food")
         XCTAssertEqual(try ctx.fetch(FetchDescriptor<ExpenseCategory>()).count, 1)
     }
@@ -69,8 +74,9 @@ final class CategoryActionsTests: XCTestCase {
     func test_add_persistsBudget() throws {
         let container = try makeInMemoryContainer()
         let ctx = container.mainContext
-        let created = CategoryActions.add(name: "Food", symbolName: "fork.knife",
-                                          colorHex: "#FFEBCC", budget: 300, in: ctx)
+        let created = CategoryActions.add(
+            CategoryDraft(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC", budget: 300),
+            in: ctx)
         XCTAssertEqual(created.budget, 300)
         try ctx.save()
         XCTAssertEqual(try ctx.fetch(FetchDescriptor<ExpenseCategory>()).first?.budget, 300)
@@ -79,8 +85,8 @@ final class CategoryActionsTests: XCTestCase {
     func test_add_defaultsBudgetToZero() throws {
         let container = try makeInMemoryContainer()
         let ctx = container.mainContext
-        let created = CategoryActions.add(name: "Food", symbolName: "fork.knife",
-                                          colorHex: "#FFEBCC", in: ctx)
+        let created = CategoryActions.add(
+            CategoryDraft(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC"), in: ctx)
         XCTAssertEqual(created.budget, 0)
     }
 
