@@ -45,9 +45,10 @@ Three modal dialogs: Google Sheets export, add category, bug reporting.
   - Text: charcoal `~#2A2A2A` for contrast.
 - **No emoji.** **No decorative SVG art.** **No filler/sample data** in shipped UI.
   - *Exception:* **country flags in the currency picker rows** (they convey the currency,
-    not decoration). Implemented as bundled `flag-icons` square SVGs in the asset catalog
-    (`flag-<region>`, e.g. `flag-us`; MIT-licensed, public-domain flags), matching the
-    handoff — not emoji. This is the only sanctioned flag/art exception.
+    not decoration). Bundled as `flag-<region>` PNGs in the asset catalog (e.g. `flag-us`),
+    rasterized from `flag-icons` 1x1 SVGs (MIT-licensed, public-domain flags) — PNG, not
+    SVG, because Xcode's asset-catalog SVG importer drops complex flag detail (stars/`<use>`).
+    Not emoji. This is the only sanctioned flag/art exception.
 - Keep the visual language clean and restrained.
 - **Match the handoff.** `design_handoff_plop/screenshots/*.jpg` is the visual source of
   truth. Before building any screen/dialog and again when verifying it, READ the matching
