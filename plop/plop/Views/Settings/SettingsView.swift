@@ -2,8 +2,8 @@ import SwiftUI
 import SwiftData
 
 /// Settings tab: grouped list (DATA / PREFERENCES / RECURRING / SUPPORT). Rows use the
-/// shared SettingsRow for consistent alignment. Behaviors are unchanged: Set budget /
-/// Manage categories / Currency push; Theme / Recurring / Export / Bug open sheets.
+/// shared SettingsRow for consistent alignment. Every option opens a blurred bottom popup
+/// (BlurPopup); the NavigationStack remains only to host the "Settings" title.
 struct SettingsView: View {
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @AppStorage(budgetModeKey) private var budgetModeRaw = BudgetMode.category.rawValue
@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var showingRecurring = false
     @State private var showingBudget = false
     @State private var showingCurrency = false
+    @State private var showingManage = false
 
     var body: some View {
         NavigationStack {
@@ -35,10 +36,11 @@ struct SettingsView: View {
                                     title: "Set budget", value: budgetSummary, showsChevron: false)
                     }
                     .buttonStyle(.plain)
-                    NavigationLink { ManageCategoriesView() } label: {
+                    Button { showingManage = true } label: {
                         SettingsRow(tile: Palette.accentSoft, systemImage: "tag.fill",
                                     title: "Manage categories", showsChevron: false)
                     }
+                    .buttonStyle(.plain)
                     Button { showingCurrency = true } label: {
                         SettingsRow(tile: Palette.cream, systemImage: "dollarsign.circle.fill",
                                     title: "Currency", value: currencyCode, showsChevron: false)
@@ -89,7 +91,7 @@ struct SettingsView: View {
             .blurPopup(isPresented: $showingBugReport) {
                 BugReportSheet()
             }
-            .blurPopup(isPresented: $showingRecurring) {
+            .blurPopup(isPresented: $showingRecurring, tall: true) {
                 RecurringRulesSheet()
             }
             .blurPopup(isPresented: $showingBudget) {
@@ -97,6 +99,9 @@ struct SettingsView: View {
             }
             .blurPopup(isPresented: $showingCurrency, tall: true) {
                 CurrencyView()
+            }
+            .blurPopup(isPresented: $showingManage, tall: true) {
+                ManageCategoriesView()
             }
         }
         .tint(Palette.accent)

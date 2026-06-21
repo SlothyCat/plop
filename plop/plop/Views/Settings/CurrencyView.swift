@@ -5,7 +5,13 @@ import UIKit
 struct CurrencyView: View {
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @Environment(\.blurPopupClose) private var close
+    @Environment(\.blurPopupMaxHeight) private var maxHeight
     @State private var listHeight: CGFloat = 0
+
+    private var scrollCap: CGFloat {
+        let ceiling = maxHeight.isFinite ? maxHeight * 0.7 : 100_000
+        return listHeight == 0 ? ceiling : min(listHeight, ceiling)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -21,7 +27,7 @@ struct CurrencyView: View {
                 .padding(.vertical, 4)
                 .readHeight(into: $listHeight)
             }
-            .frame(maxHeight: listHeight == 0 ? nil : listHeight)
+            .frame(maxHeight: scrollCap)
             doneBar
         }
     }

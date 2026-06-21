@@ -17,6 +17,23 @@ extension View {
         }
         .transaction { $0.disablesAnimations = true }   // suppress the cover's own slide
     }
+
+    func blurPopup<Item: Identifiable, Card: View>(
+        item: Binding<Item?>,
+        tall: Bool = false,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder card: @escaping (Item) -> Card
+    ) -> some View {
+        fullScreenCover(item: item, onDismiss: onDismiss) { value in
+            BlurPopupContainer(
+                isPresented: Binding(get: { item.wrappedValue != nil },
+                                     set: { if !$0 { item.wrappedValue = nil } }),
+                tall: tall
+            ) { card(value) }
+                .presentationBackground(.clear)
+        }
+        .transaction { $0.disablesAnimations = true }
+    }
 }
 
 /// Closure the card content calls to dismiss the popup *with* the slide-out animation.
@@ -32,24 +49,28 @@ extension EnvironmentValues {
     }
 }
 
-/// Reports a view's height into a binding. Used to self-size a popup's scroll region to its
-/// content: cap the `ScrollView` at this height so a tall popup shrinks to short content but
-/// still scrolls (clipped by the card's own max height) when content is long.
-private struct PopupHeightKey: PreferenceKey {
-    static let defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
+/// The popup's available height (set when `tall`), so a scrolling card can cap its scroll
+/// region and stay on-screen while the card itself hugs its content. `.infinity` when the
+/// card should simply hug (non-tall).
+private struct BlurPopupMaxHeightKey: EnvironmentKey {
+    static let defaultValue: CGFloat = .infinity
+}
+
+extension EnvironmentValues {
+    var blurPopupMaxHeight: CGFloat {
+        get { self[BlurPopupMaxHeightKey.self] }
+        set { self[BlurPopupMaxHeightKey.self] = newValue }
     }
 }
 
+/// Reports a view's height into a binding. Used to self-size a popup's scroll region to its
+/// content: cap the `ScrollView` at this height so a tall popup shrinks to short content but
+/// still scrolls (clipped by the card's own max height) when content is long. Uses
+/// `onGeometryChange` (iOS 17+) — reliable inside a `ScrollView`, unlike a background
+/// PreferenceKey.
 extension View {
     func readHeight(into binding: Binding<CGFloat>) -> some View {
-        background(
-            GeometryReader { geo in
-                Color.clear.preference(key: PopupHeightKey.self, value: geo.size.height)
-            }
-        )
-        .onPreferenceChange(PopupHeightKey.self) { binding.wrappedValue = $0 }
+        onGeometryChange(for: CGFloat.self) { $0.size.height } action: { binding.wrappedValue = $0 }
     }
 }
 
@@ -76,8 +97,7 @@ private struct BlurPopupContainer<Card: View>: View {
                     .onTapGesture { close() }
 
                 card()
-                    .frame(maxWidth: .infinity,
-                           maxHeight: tall ? proxy.size.height * 0.8 : nil)
+                    .frame(maxWidth: .infinity)
                     .background(Palette.card,
                                 in: RoundedRectangle(cornerRadius: 26, style: .continuous))
                     .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
@@ -86,6 +106,7 @@ private struct BlurPopupContainer<Card: View>: View {
                     .offset(y: shown ? drag : 1000)
                     .gesture(dragToDismiss)
                     .environment(\.blurPopupClose, close)
+                    .environment(\.blurPopupMaxHeight, tall ? proxy.size.height : .infinity)
             }
         }
         .onAppear { withAnimation(anim) { shown = true } }
