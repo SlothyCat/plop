@@ -20,10 +20,13 @@ struct NetTotalHeader: View {
                     .background(Palette.card, in: Capsule())
                     .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
             }
-            Text(formattedMoney(net, currencyCode: currencyCode))
+            (Text((net < 0 ? "-" : "") + currencySymbol(currencyCode))
+                .font(.system(size: 34, weight: .semibold))
+                .foregroundStyle(Palette.ink40)
+             + Text(formattedAmountDigits(net, currencyCode: currencyCode))
                 .font(.system(size: 56, weight: .semibold))
+                .foregroundStyle(Palette.ink))
                 .monospacedDigit()
-                .foregroundStyle(Palette.ink)
         }
     }
 
