@@ -13,111 +13,135 @@ struct BudgetView: View {
 
     @State private var generalField = ""
     @State private var catFields: [PersistentIdentifier: String] = [:]
-    @State private var listHeight: CGFloat = 0
 
     private var mode: BudgetMode { BudgetMode(rawValue: modeRaw) ?? .category }
 
+    private var subtitle: String {
+        mode == .general
+            ? "One monthly limit for everything you spend."
+            : "Give each category its own limit — they add up to your total."
+    }
+
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 16) {
             header
-            VStack(spacing: 14) {
+
+            VStack(alignment: .leading, spacing: 8) {
+                sectionLabel("BUDGET TYPE")
                 Picker("Budget mode", selection: $modeRaw) {
                     Text("Total").tag(BudgetMode.general.rawValue)
                     Text("By category").tag(BudgetMode.category.rawValue)
                 }
                 .pickerStyle(.segmented)
-                Text(mode == .general
-                     ? "One monthly budget. Categories are ignored in this mode."
-                     : "Give each category its own limit — they add up to your total.")
+                Text(subtitle)
                     .font(.system(size: 14)).foregroundStyle(Palette.ink60)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 20)
 
-            ScrollView {
-                VStack(spacing: 10) {
-                    if mode == .general {
-                        fieldCard(text: $generalField)
-                    } else {
+            if mode == .general {
+                VStack(alignment: .leading, spacing: 7) {
+                    sectionLabel("MONTHLY BUDGET")
+                    bigField
+                }
+            } else {
+                VStack(spacing: 12) {
+                    VStack(spacing: 8) {
                         ForEach(categories) { cat in categoryRow(cat) }
                     }
+                    totalCard
                 }
-                .padding(.horizontal, 20).padding(.vertical, 14)
-                .readHeight(into: $listHeight)
             }
-            .frame(maxHeight: listHeight == 0 ? nil : listHeight)
 
-            footer
+            VStack(spacing: 4) {
+                Button { save(); close() } label: {
+                    Text("Save budget")
+                        .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.tileInk)
+                        .frame(maxWidth: .infinity).padding(.vertical, 15)
+                        .background(Palette.accent,
+                                    in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+                .buttonStyle(.plain)
+                Button("Cancel") { close() }
+                    .font(.system(size: 16, weight: .medium)).foregroundStyle(Palette.ink60)
+                    .frame(maxWidth: .infinity).padding(.vertical, 8)
+            }
+            .padding(.top, 2)
         }
+        .padding(.horizontal, 20).padding(.top, 22).padding(.bottom, 18)
         .onAppear(perform: loadFields)
     }
 
     private var header: some View {
-        HStack(spacing: 13) {
+        HStack(spacing: 12) {
             Image(systemName: "target")
-                .font(.system(size: 18, weight: .medium)).foregroundStyle(Palette.tileInk)
+                .font(.system(size: 22, weight: .regular)).foregroundStyle(Palette.tileInk)
                 .frame(width: 42, height: 42)
-                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
             Text("Set budget")
                 .font(.system(size: 24, weight: .bold)).foregroundStyle(Palette.ink)
-            Spacer()
         }
-        .padding(.horizontal, 20).padding(.top, 22).padding(.bottom, 14)
+    }
+
+    private func sectionLabel(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 12.5, weight: .semibold)).tracking(0.4)
+            .foregroundStyle(Palette.ink40)
+    }
+
+    private var bigField: some View {
+        HStack(spacing: 8) {
+            Text(currencySymbol(currencyCode))
+                .font(.system(size: 22, weight: .semibold)).foregroundStyle(Palette.ink40)
+            TextField("No budget", text: $generalField)
+                .keyboardType(.decimalPad)
+                .font(.system(size: 28, weight: .bold)).foregroundStyle(Palette.ink)
+                .monospacedDigit()
+        }
+        .padding(.horizontal, 16).padding(.vertical, 14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Palette.field, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.ink12, lineWidth: 1))
     }
 
     private func categoryRow(_ cat: ExpenseCategory) -> some View {
         HStack(spacing: 12) {
             Image(systemName: cat.symbolName)
-                .font(.system(size: 16)).foregroundStyle(Palette.tileInk)
+                .font(.system(size: 18)).foregroundStyle(Palette.tileInk)
                 .frame(width: 38, height: 38)
                 .background(Color(hex: cat.colorHex),
-                            in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-            Text(cat.name).font(.system(size: 16, weight: .medium)).foregroundStyle(Palette.ink)
+                            in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+            Text(cat.name).font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.ink)
             Spacer()
-            fieldCard(text: bindingFor(cat)).frame(width: 140)
+            smallField(text: bindingFor(cat)).frame(width: 116)
         }
     }
 
-    private func fieldCard(text: Binding<String>) -> some View {
+    private func smallField(text: Binding<String>) -> some View {
         HStack(spacing: 6) {
             Text(currencySymbol(currencyCode))
-                .font(.system(size: 15)).foregroundStyle(Palette.ink40)
+                .font(.system(size: 15, weight: .semibold)).foregroundStyle(Palette.ink40)
             TextField("0", text: text)
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
+                .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
                 .font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.ink)
+                .monospacedDigit()
         }
-        .padding(.horizontal, 12).padding(.vertical, 11)
+        .padding(.horizontal, 14).padding(.vertical, 11)
         .background(Palette.field, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 12).stroke(Palette.ink12, lineWidth: 1))
     }
 
-    private var footer: some View {
-        VStack(spacing: 12) {
-            if mode == .category {
-                HStack {
-                    Text("Total monthly budget")
-                        .font(.system(size: 15)).foregroundStyle(Palette.ink60)
-                    Spacer()
-                    Text(formattedMoney(sumBudgetStrings(Array(catFields.values)),
-                                        currencyCode: currencyCode))
-                        .font(.system(size: 18, weight: .bold)).foregroundStyle(Palette.ink)
-                }
-                .padding(.horizontal, 16).padding(.vertical, 14)
-                .background(Palette.field, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            }
-            Button { save(); close() } label: {
-                Text("Save budget")
-                    .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.tileInk)
-                    .frame(maxWidth: .infinity).padding(.vertical, 15)
-                    .background(Palette.accent, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            }
-            .buttonStyle(.plain)
-            Button("Cancel") { close() }
-                .font(.system(size: 16, weight: .medium)).foregroundStyle(Palette.ink60)
+    private var totalCard: some View {
+        HStack {
+            Text("Total monthly budget")
+                .font(.system(size: 15, weight: .semibold)).foregroundStyle(Palette.ink60)
+            Spacer()
+            Text(formattedMoney(sumBudgetStrings(Array(catFields.values)),
+                                currencyCode: currencyCode))
+                .font(.system(size: 19, weight: .bold)).foregroundStyle(Palette.ink).monospacedDigit()
         }
-        .padding(.horizontal, 20).padding(.top, 6).padding(.bottom, 24)
+        .padding(.horizontal, 16).padding(.vertical, 14)
+        .background(Palette.field, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.ink12, lineWidth: 1))
     }
 
     private func bindingFor(_ cat: ExpenseCategory) -> Binding<String> {

@@ -42,9 +42,9 @@ struct CurrencyView: View {
         let on = code == currencyCode
         return HStack(spacing: 13) {
             flag(code)
-                .frame(width: 40, height: 40)
-                .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 11).stroke(Palette.ink12, lineWidth: 1))
+                .frame(width: 38, height: 38)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Palette.ink12, lineWidth: 1))
             VStack(alignment: .leading, spacing: 1) {
                 Text(code)
                     .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)

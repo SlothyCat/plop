@@ -92,7 +92,7 @@ struct SettingsView: View {
             .blurPopup(isPresented: $showingRecurring) {
                 RecurringRulesSheet()
             }
-            .blurPopup(isPresented: $showingBudget, tall: true) {
+            .blurPopup(isPresented: $showingBudget) {
                 BudgetView()
             }
             .blurPopup(isPresented: $showingCurrency, tall: true) {
