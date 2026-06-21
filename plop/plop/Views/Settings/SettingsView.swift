@@ -2,8 +2,8 @@ import SwiftUI
 import SwiftData
 
 /// Settings tab: grouped list (DATA / PREFERENCES / RECURRING / SUPPORT). Rows use the
-/// shared SettingsRow for consistent alignment. Behaviors are unchanged: Set budget /
-/// Manage categories / Currency push; Theme / Recurring / Export / Bug open sheets.
+/// shared SettingsRow for consistent alignment. Every option opens a blurred bottom popup
+/// (BlurPopup); the NavigationStack remains only to host the "Settings" title.
 struct SettingsView: View {
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @AppStorage(budgetModeKey) private var budgetModeRaw = BudgetMode.category.rawValue
