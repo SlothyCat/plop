@@ -17,6 +17,11 @@ final class CategoryActionsTests: XCTestCase {
         XCTAssertEqual(cats.first?.colorHex, "#FFEBCC")
     }
 
+    func test_category_emojiDefaultsEmpty() {
+        let cat = ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC")
+        XCTAssertEqual(cat.emoji, "")
+    }
+
     func test_update_mutatesFields() throws {
         let container = try makeInMemoryContainer()
         let ctx = container.mainContext
