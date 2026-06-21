@@ -16,6 +16,17 @@ func currencyDisplayName(_ code: String) -> String {
     Locale.current.localizedString(forCurrencyCode: code) ?? code
 }
 
+/// Two-letter lowercase region for a currency code (USD→"us", EUR→"eu", CHF→"ch"); the
+/// bundled flag image is named "flag-<region>" (flag-icons SVGs in the asset catalog).
+func currencyRegionCode(_ code: String) -> String {
+    code.prefix(2).lowercased()
+}
+
+/// Asset-catalog name for a currency's flag image (e.g. "flag-us").
+func currencyFlagAsset(_ code: String) -> String {
+    "flag-\(currencyRegionCode(code))"
+}
+
 func currencySymbol(_ code: String) -> String {
     let formatter = NumberFormatter()
     formatter.numberStyle = .currency

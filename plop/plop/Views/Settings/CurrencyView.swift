@@ -1,42 +1,89 @@
 import SwiftUI
+import UIKit
 
-/// Picks the app-wide display currency (no conversion). Writing @AppStorage re-renders
-/// every money view that reads it.
+/// Picks the app-wide display currency (no conversion). Matches the handoff Currency popup.
 struct CurrencyView: View {
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
+    @Environment(\.blurPopupClose) private var close
+    @State private var listHeight: CGFloat = 0
 
     var body: some View {
-        List {
-            Section {
-                ForEach(currencyChoices, id: \.self) { code in
-                    Button { currencyCode = code } label: { row(code) }
-                        .buttonStyle(.plain)
+        VStack(spacing: 0) {
+            header
+            ScrollView {
+                LazyVStack(spacing: 10) {
+                    ForEach(currencyChoices, id: \.self) { code in
+                        Button { currencyCode = code } label: { row(code) }
+                            .buttonStyle(.plain)
+                    }
                 }
-            } footer: {
-                Text("Amounts aren't converted — only the symbol and decimal places change.")
+                .padding(.horizontal, 20)
+                .padding(.vertical, 4)
+                .readHeight(into: $listHeight)
             }
+            .frame(maxHeight: listHeight == 0 ? nil : listHeight)
+            doneBar
         }
-        .scrollContentBackground(.hidden)
-        .background(Palette.bg)
-        .navigationTitle("Currency")
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Currency")
+                .font(.system(size: 24, weight: .bold)).foregroundStyle(Palette.ink)
+            Text("Pick the currency symbol used across the app. Amounts aren't converted.")
+                .font(.system(size: 15)).foregroundStyle(Palette.ink60)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20).padding(.top, 22).padding(.bottom, 12)
     }
 
     private func row(_ code: String) -> some View {
-        HStack(spacing: 12) {
-            Text(code)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(Palette.ink)
-                .frame(width: 44, alignment: .leading)
-            Text(currencySymbol(code)).foregroundStyle(Palette.ink40)
-            Text(currencyDisplayName(code)).foregroundStyle(Palette.ink40).lineLimit(1)
+        let on = code == currencyCode
+        return HStack(spacing: 13) {
+            flag(code)
+                .frame(width: 38, height: 38)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Palette.ink12, lineWidth: 1))
+            VStack(alignment: .leading, spacing: 1) {
+                Text(code)
+                    .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
+                Text(currencyDisplayName(code))
+                    .font(.system(size: 13.5)).foregroundStyle(Palette.ink40).lineLimit(1)
+            }
             Spacer()
-            if code == currencyCode {
-                Image(systemName: "checkmark").foregroundStyle(Palette.accent)
+            if on {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.ink)
             }
         }
+        .padding(12)
+        .background(on ? Palette.accent : Palette.card,
+                    in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 16)
+            .stroke(on ? Color.clear : Palette.ink12, lineWidth: 1))
+    }
+
+    @ViewBuilder private func flag(_ code: String) -> some View {
+        if UIImage(named: currencyFlagAsset(code)) != nil {
+            Image(currencyFlagAsset(code)).resizable().scaledToFill()
+        } else {
+            Text(currencySymbol(code))
+                .font(.system(size: 15, weight: .bold)).foregroundStyle(Palette.tileInk)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Palette.card)
+        }
+    }
+
+    private var doneBar: some View {
+        Button("Done") { close() }
+            .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .overlay(Rectangle().fill(Palette.hair).frame(height: 1), alignment: .top)
     }
 }
 
 #if DEBUG
-#Preview { NavigationStack { CurrencyView() } }
+#Preview { CurrencyView() }
 #endif

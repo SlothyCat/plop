@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 @testable import plop
 
 final class CurrencyTests: XCTestCase {
@@ -22,5 +23,25 @@ final class CurrencyTests: XCTestCase {
 
     func test_money_jpyHasNoDecimals() {
         XCTAssertFalse(formattedMoney(Decimal(100), currencyCode: "JPY").contains("."))
+    }
+
+    func test_currencyRegionCode_mapsCodeToRegion() {
+        XCTAssertEqual(currencyRegionCode("USD"), "us")
+        XCTAssertEqual(currencyRegionCode("EUR"), "eu")
+        XCTAssertEqual(currencyRegionCode("GBP"), "gb")
+        XCTAssertEqual(currencyRegionCode("CHF"), "ch")
+        XCTAssertEqual(currencyRegionCode("JPY"), "jp")
+    }
+
+    func test_currencyFlagAsset_namesBundledImage() {
+        XCTAssertEqual(currencyFlagAsset("USD"), "flag-us")
+        XCTAssertEqual(currencyFlagAsset("KRW"), "flag-kr")
+    }
+
+    func test_currencyFlagAsset_existsForEveryChoice() {
+        for code in currencyChoices {
+            XCTAssertNotNil(UIImage(named: currencyFlagAsset(code)),
+                            "missing flag asset for \(code)")
+        }
     }
 }
