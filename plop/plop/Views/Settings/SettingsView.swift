@@ -15,6 +15,8 @@ struct SettingsView: View {
     @State private var showingExport = false
     @State private var showingBugReport = false
     @State private var showingRecurring = false
+    @State private var showingBudget = false
+    @State private var showingCurrency = false
 
     var body: some View {
         NavigationStack {
@@ -28,18 +30,20 @@ struct SettingsView: View {
                 } header: { groupLabel("DATA") }
 
                 Section {
-                    NavigationLink { BudgetView() } label: {
+                    Button { showingBudget = true } label: {
                         SettingsRow(tile: Palette.accent, systemImage: "chart.pie.fill",
                                     title: "Set budget", value: budgetSummary, showsChevron: false)
                     }
+                    .buttonStyle(.plain)
                     NavigationLink { ManageCategoriesView() } label: {
                         SettingsRow(tile: Palette.accentSoft, systemImage: "tag.fill",
                                     title: "Manage categories", showsChevron: false)
                     }
-                    NavigationLink { CurrencyView() } label: {
+                    Button { showingCurrency = true } label: {
                         SettingsRow(tile: Palette.cream, systemImage: "dollarsign.circle.fill",
                                     title: "Currency", value: currencyCode, showsChevron: false)
                     }
+                    .buttonStyle(.plain)
                     Button { showingAppearance = true } label: {
                         SettingsRow(tile: Palette.yellow, systemImage: "circle.lefthalf.filled",
                                     title: "Theme",
@@ -87,6 +91,12 @@ struct SettingsView: View {
             }
             .blurPopup(isPresented: $showingRecurring) {
                 RecurringRulesSheet()
+            }
+            .blurPopup(isPresented: $showingBudget, tall: true) {
+                BudgetView()
+            }
+            .blurPopup(isPresented: $showingCurrency, tall: true) {
+                CurrencyView()
             }
         }
         .tint(Palette.accent)
