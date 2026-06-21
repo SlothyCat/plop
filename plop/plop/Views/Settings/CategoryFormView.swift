@@ -232,15 +232,14 @@ struct CategoryFormView: View {
     private func save() {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let budget = parseBudgetAmount(budgetField)
-        let chosenEmoji = iconType == .emoji ? emoji : ""
+        let draft = CategoryDraft(name: trimmed, symbolName: symbolName,
+                                  emoji: iconType == .emoji ? emoji : "",
+                                  colorHex: colorHex, budget: budget)
         if let editing {
-            CategoryActions.update(editing, name: trimmed, symbolName: symbolName,
-                                   emoji: chosenEmoji, colorHex: colorHex, budget: budget)
+            CategoryActions.update(editing, with: draft)
             onSave?(editing)
         } else {
-            let created = CategoryActions.add(name: trimmed, symbolName: symbolName,
-                                              emoji: chosenEmoji, colorHex: colorHex,
-                                              budget: budget, in: modelContext)
+            let created = CategoryActions.add(draft, in: modelContext)
             onSave?(created)
         }
         close()
