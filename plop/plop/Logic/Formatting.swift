@@ -12,6 +12,19 @@ func formattedMoney(_ amount: Decimal, signed: Bool = false, currencyCode: Strin
     return amount < 0 ? "-" + body : body
 }
 
+/// Grouped, unsigned amount with NO currency symbol — for composing a custom money label
+/// (e.g. a gray symbol prefix + dark digits). Fraction digits follow the currency.
+func formattedAmountDigits(_ amount: Decimal, currencyCode: String) -> String {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.usesGroupingSeparator = true
+    let digits = currencyFractionDigits(currencyCode: currencyCode)
+    formatter.minimumFractionDigits = digits
+    formatter.maximumFractionDigits = digits
+    let magnitude = NSDecimalNumber(decimal: abs(amount))
+    return formatter.string(from: magnitude) ?? "\(abs(amount))"
+}
+
 /// Day-group header: "TODAY" / "YESTERDAY" / "FRI, 29 MAY".
 func dayLabel(for date: Date, relativeTo today: Date, calendar: Calendar) -> String {
     let startOfDate = calendar.startOfDay(for: date)

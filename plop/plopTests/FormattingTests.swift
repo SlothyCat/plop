@@ -14,6 +14,22 @@ final class FormattingTests: XCTestCase {
         XCTAssertTrue(s.contains("200"), s)
     }
 
+    func test_amountDigits_unsignedNoSymbol() {
+        let s = formattedAmountDigits(Decimal(-612), currencyCode: "USD")
+        XCTAssertFalse(s.hasPrefix("-"), s)
+        XCTAssertFalse(s.contains("$"), s)
+        XCTAssertTrue(s.contains("612"), s)
+    }
+
+    func test_amountDigits_usdHasTwoFractionDigits() {
+        let s = formattedAmountDigits(Decimal(5), currencyCode: "USD")
+        XCTAssertTrue(s.hasSuffix("00"), s)
+    }
+
+    func test_amountDigits_jpyHasNoFraction() {
+        XCTAssertEqual(formattedAmountDigits(Decimal(100), currencyCode: "JPY"), "100")
+    }
+
     func test_dayLabel_todayAndYesterday() {
         let cal = fixedCalendar()
         let today = makeDate(2026, 5, 30, 9, 0, calendar: cal)
