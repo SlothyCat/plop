@@ -17,6 +17,23 @@ extension View {
         }
         .transaction { $0.disablesAnimations = true }   // suppress the cover's own slide
     }
+
+    func blurPopup<Item: Identifiable, Card: View>(
+        item: Binding<Item?>,
+        tall: Bool = false,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder card: @escaping (Item) -> Card
+    ) -> some View {
+        fullScreenCover(item: item, onDismiss: onDismiss) { value in
+            BlurPopupContainer(
+                isPresented: Binding(get: { item.wrappedValue != nil },
+                                     set: { if !$0 { item.wrappedValue = nil } }),
+                tall: tall
+            ) { card(value) }
+                .presentationBackground(.clear)
+        }
+        .transaction { $0.disablesAnimations = true }
+    }
 }
 
 /// Closure the card content calls to dismiss the popup *with* the slide-out animation.
