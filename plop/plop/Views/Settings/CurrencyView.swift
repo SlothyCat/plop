@@ -28,7 +28,6 @@ struct CurrencyView: View {
                 .readHeight(into: $listHeight)
             }
             .frame(maxHeight: scrollCap)
-            doneBar
         }
     }
 
@@ -68,6 +67,7 @@ struct CurrencyView: View {
                     in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 16)
             .stroke(on ? Color.clear : Palette.ink12, lineWidth: 1))
+        .contentShape(Rectangle())
     }
 
     @ViewBuilder private func flag(_ code: String) -> some View {
@@ -81,13 +81,6 @@ struct CurrencyView: View {
         }
     }
 
-    private var doneBar: some View {
-        Button("Done") { close() }
-            .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .overlay(Rectangle().fill(Palette.hair).frame(height: 1), alignment: .top)
-    }
 }
 
 #if DEBUG

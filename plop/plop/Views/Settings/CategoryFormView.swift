@@ -80,15 +80,8 @@ struct CategoryFormView: View {
             VStack(spacing: 4) {
                 Button { save() } label: {
                     Text("Save")
-                        .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.tileInk)
-                        .frame(maxWidth: .infinity).padding(.vertical, 15)
-                        .background(Palette.accent.opacity(canSave ? 1 : 0.45),
-                                    in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 }
-                .buttonStyle(.plain).disabled(!canSave)
-                Button("Cancel") { close() }
-                    .font(.system(size: 16, weight: .medium)).foregroundStyle(Palette.ink60)
-                    .frame(maxWidth: .infinity).padding(.vertical, 8)
+                .buttonStyle(PopupPrimaryButton(enabled: canSave)).disabled(!canSave)
             }
             .padding(.top, 2)
         }

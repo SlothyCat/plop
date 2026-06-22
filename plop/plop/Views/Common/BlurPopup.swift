@@ -79,6 +79,7 @@ private struct BlurPopupContainer<Card: View>: View {
     var tall: Bool
     @ViewBuilder var card: () -> Card
 
+    @AppStorage(themeModeKey) private var themeModeRaw = ThemeMode.automatic.rawValue
     @State private var shown = false
     @State private var drag: CGFloat = 0
 
@@ -98,6 +99,7 @@ private struct BlurPopupContainer<Card: View>: View {
 
                 card()
                     .frame(maxWidth: .infinity)
+                    .overlay(alignment: .topTrailing) { closeButton }
                     .background(Palette.card,
                                 in: RoundedRectangle(cornerRadius: 26, style: .continuous))
                     .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
@@ -110,7 +112,18 @@ private struct BlurPopupContainer<Card: View>: View {
                     .environment(\.blurPopupMaxHeight, tall ? proxy.size.height : .infinity)
             }
         }
+        .preferredColorScheme((ThemeMode(rawValue: themeModeRaw) ?? .automatic).colorScheme)
         .onAppear { withAnimation(anim) { shown = true } }
+    }
+
+    private var closeButton: some View {
+        Button { close() } label: {
+            Image(systemName: "xmark")
+                .font(.system(size: 14, weight: .bold)).foregroundStyle(Palette.ink60)
+                .frame(width: 32, height: 32).background(Palette.field, in: Circle())
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 14).padding(.trailing, 14)
     }
 
     private var dragToDismiss: some Gesture {

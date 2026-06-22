@@ -30,6 +30,7 @@ struct SettingsRow: View {
                     .foregroundStyle(.tertiary)
             }
         }
+        .contentShape(Rectangle())
     }
 }
 

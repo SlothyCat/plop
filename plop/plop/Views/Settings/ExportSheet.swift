@@ -79,10 +79,9 @@ struct ExportSheet: View {
 
             VStack(spacing: 8) {
                 Button { Task { await runExport() } } label: {
-                    Text("Export").frame(maxWidth: .infinity)
+                    Text("Export")
                 }
-                .buttonStyle(.borderedProminent).tint(Palette.accent)
-                Button("Cancel") { close() }.foregroundStyle(Palette.ink60)
+                .buttonStyle(PopupPrimaryButton())
             }
         }
     }
@@ -105,8 +104,7 @@ struct ExportSheet: View {
             Button { openURL(url) } label: {
                 Label("Open in Google Sheets", systemImage: "arrow.up.right.square")
             }
-            .buttonStyle(.borderedProminent).tint(Palette.accent)
-            Button("Done") { close() }.foregroundStyle(Palette.ink60)
+            .buttonStyle(PopupPrimaryButton())
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
