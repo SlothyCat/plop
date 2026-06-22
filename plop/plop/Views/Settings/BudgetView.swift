@@ -55,12 +55,8 @@ struct BudgetView: View {
             VStack(spacing: 4) {
                 Button { save(); close() } label: {
                     Text("Save budget")
-                        .font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.tileInk)
-                        .frame(maxWidth: .infinity).padding(.vertical, 15)
-                        .background(Palette.accent,
-                                    in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(PopupPrimaryButton())
             }
             .padding(.top, 2)
         }

@@ -66,8 +66,8 @@ struct BugReportSheet: View {
             screenshotRow
 
             VStack(spacing: 8) {
-                Button { send() } label: { Text("Send").frame(maxWidth: .infinity) }
-                    .buttonStyle(.borderedProminent).tint(Palette.accent)
+                Button { send() } label: { Text("Send") }
+                    .buttonStyle(PopupPrimaryButton(enabled: canSend))
                     .disabled(!canSend)
             }
         }
@@ -117,8 +117,8 @@ struct BugReportSheet: View {
             VStack(spacing: 8) {
                 Button {
                     UIPasteboard.general.string = composedBody()
-                } label: { Text("Copy report").frame(maxWidth: .infinity) }
-                    .buttonStyle(.borderedProminent).tint(Palette.accent)
+                } label: { Text("Copy report") }
+                    .buttonStyle(PopupPrimaryButton())
             }
         }
     }
