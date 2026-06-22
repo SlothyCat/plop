@@ -80,6 +80,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(.hidden)
             .background(Palette.bg)
             .blurPopup(isPresented: $showingAppearance) {
