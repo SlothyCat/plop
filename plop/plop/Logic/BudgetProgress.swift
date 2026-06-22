@@ -83,7 +83,8 @@ func budgetSummary(spend: [CategorySpend],
 /// cumulative, clamped to [0, 1] so an over-budget ring fills to a full circle
 /// (over-ness is shown by the center caption, not by overflowing arcs).
 /// Empty when totalBudget == 0.
-func budgetDonutSlices(_ summary: BudgetSummary, gap: Double = 0.012) -> [DonutSlice] {
+func budgetDonutSlices(_ summary: BudgetSummary, gap: Double = 0.012,
+                       minArc: Double = 0.03) -> [DonutSlice] {
     let total = summary.totalBudget
     guard total > 0 else { return [] }
     let totalDouble = NSDecimalNumber(decimal: total).doubleValue
@@ -92,10 +93,11 @@ func budgetDonutSlices(_ summary: BudgetSummary, gap: Double = 0.012) -> [DonutS
     var slices: [DonutSlice] = []
     for row in summary.donutRows {
         let frac = NSDecimalNumber(decimal: row.spent).doubleValue / totalDouble
+        let drawn = row.spent > 0 ? max(frac, minArc) : 0
         let start = min(cursor + gap / 2, 1.0)
-        let end = min(max(start, cursor + frac - gap / 2), 1.0)
+        let end = min(max(start, cursor + drawn - gap / 2), 1.0)
         slices.append(DonutSlice(id: row.id, colorHex: row.colorHex, start: start, end: end))
-        cursor += frac
+        cursor += drawn
     }
     return slices
 }
