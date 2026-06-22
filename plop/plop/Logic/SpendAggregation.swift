@@ -38,21 +38,47 @@ struct DonutSlice: Identifiable, Equatable {
     let end: Double
 }
 
+/// Raise each non-zero fraction below `minArc` up to `minArc`, shrinking the ≥ `minArc`
+/// fractions proportionally to absorb the deficit so the set still sums to 1 (assuming the
+/// input sums to 1). No-op when nothing is below `minArc`. Falls back to an equal split among
+/// non-zero entries if there isn't enough room to steal the deficit.
+func minArcAdjusted(_ fractions: [Double], minArc: Double) -> [Double] {
+    let deficit = fractions.filter { $0 > 0 && $0 < minArc }
+                           .reduce(0.0) { $0 + (minArc - $1) }
+    guard deficit > 0 else { return fractions }
+
+    let bigSum = fractions.filter { $0 >= minArc }.reduce(0.0, +)
+    guard bigSum > deficit else {
+        let k = fractions.filter { $0 > 0 }.count
+        let equal = k > 0 ? 1.0 / Double(k) : 0
+        return fractions.map { $0 > 0 ? equal : 0 }
+    }
+
+    let factor = (bigSum - deficit) / bigSum
+    return fractions.map { f in
+        if f <= 0 { return 0 }
+        return f < minArc ? minArc : f * factor
+    }
+}
+
 /// Cumulative start/end ring fractions per slice, inset by `gap` between slices.
 /// Tiny slices clamp to zero length (start == end) rather than going negative.
-func donutSlices(from spend: [CategorySpend], gap: Double = 0.012) -> [DonutSlice] {
+func donutSlices(from spend: [CategorySpend], gap: Double = 0.012,
+                 minArc: Double = 0.03) -> [DonutSlice] {
     let total = totalSpent(spend)
     guard total > 0 else { return [] }
     let totalDouble = NSDecimalNumber(decimal: total).doubleValue
+    let drawn = minArcAdjusted(spend.map {
+        NSDecimalNumber(decimal: $0.amount).doubleValue / totalDouble
+    }, minArc: minArc)
 
     var cursor = 0.0
     var slices: [DonutSlice] = []
-    for s in spend {
-        let frac = NSDecimalNumber(decimal: s.amount).doubleValue / totalDouble
+    for (i, s) in spend.enumerated() {
         let start = cursor + gap / 2
-        let end = max(start, cursor + frac - gap / 2)
+        let end = max(start, cursor + drawn[i] - gap / 2)
         slices.append(DonutSlice(id: s.id, colorHex: s.colorHex, start: start, end: end))
-        cursor += frac
+        cursor += drawn[i]
     }
     return slices
 }

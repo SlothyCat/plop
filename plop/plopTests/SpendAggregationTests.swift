@@ -96,4 +96,24 @@ final class SpendAggregationTests: XCTestCase {
         XCTAssertEqual(slices[1].start, 0.75, accuracy: 0.0001)
         XCTAssertEqual(slices[1].end,   1.0,  accuracy: 0.0001)
     }
+
+    func test_minArcAdjusted_noOpWhenAllAboveMin() {
+        XCTAssertEqual(minArcAdjusted([0.75, 0.25], minArc: 0.03), [0.75, 0.25])
+    }
+
+    func test_minArcAdjusted_bumpsTinyAndStealsFromLarge() {
+        let out = minArcAdjusted([0.99, 0.01], minArc: 0.03)
+        XCTAssertEqual(out[1], 0.03, accuracy: 0.0001)
+        XCTAssertEqual(out[0], 0.97, accuracy: 0.0001)
+        XCTAssertEqual(out.reduce(0, +), 1.0, accuracy: 0.0001)
+    }
+
+    func test_donutSlices_tinySliceStaysVisible() {
+        let spend = [
+            CategorySpend(id: "a", name: "A", colorHex: "#000000", amount: 99),
+            CategorySpend(id: "b", name: "B", colorHex: "#111111", amount: 1),
+        ]
+        let slices = donutSlices(from: spend, gap: 0.0)
+        XCTAssertGreaterThanOrEqual(slices[1].end - slices[1].start, 0.029)
+    }
 }

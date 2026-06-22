@@ -156,4 +156,11 @@ final class BudgetProgressTests: XCTestCase {
         XCTAssertEqual(slices[1].start, 0.2, accuracy: 0.0001)
         XCTAssertEqual(slices[1].end, 0.5, accuracy: 0.0001)
     }
+
+    func test_donut_tinySpentRowStaysVisible() {
+        // Under budget (ring not full) so the floored arc has room: 200/1000 + tiny 5/1000.
+        let s = generalSummary(spentAmounts: [("Big", 200), ("Tiny", 5)], total: 1000)
+        let slices = budgetDonutSlices(s, gap: 0.0)
+        XCTAssertGreaterThanOrEqual(slices[1].end - slices[1].start, 0.029)
+    }
 }
