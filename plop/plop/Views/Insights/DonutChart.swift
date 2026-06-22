@@ -18,7 +18,7 @@ struct DonutChart<Center: View>: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(Palette.ink.opacity(0.06), lineWidth: lineWidth)
+                .strokeBorder(Palette.ink.opacity(0.06), lineWidth: lineWidth)
                 .opacity(animate ? 1 : 0)
                 .animation(.easeIn(duration: fade), value: animate)
 
@@ -38,6 +38,7 @@ struct DonutChart<Center: View>: View {
 
     private func arc(_ slice: DonutSlice, color: Color, width: CGFloat) -> some View {
         Circle()
+            .inset(by: lineWidth / 2)
             .trim(from: slice.start, to: animate ? slice.end : slice.start)
             .stroke(color, style: StrokeStyle(lineWidth: width, lineCap: .round))
             .rotationEffect(.degrees(-90))
