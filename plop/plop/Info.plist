@@ -3,6 +3,11 @@
  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  <key>UILaunchScreen</key>
+  <dict>
+    <key>UIColorName</key>
+    <string>LaunchBackground</string>
+  </dict>
   <key>GoogleOAuthClientID</key>
   <string>$(GOOGLE_OAUTH_CLIENT_ID)</string>
   <key>CFBundleURLTypes</key>
