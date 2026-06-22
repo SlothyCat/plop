@@ -53,7 +53,8 @@ all merged:
   (per CLAUDE.md) before submission.
 - **OAuth client config** — real client ID in the git-ignored `Secrets.xcconfig` (PKCE, no
   client secret) for Google Sheets export.
-- **App assets** — app icon, launch screen, App Store screenshots/metadata.
+- **App assets** — app icon ✅ (`docs/app-icon/`), launch screen ✅ (`docs/launch-screen/`);
+  App Store screenshots/metadata still to do.
 
 ## Conventions
 
