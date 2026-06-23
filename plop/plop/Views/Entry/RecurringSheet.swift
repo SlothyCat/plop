@@ -4,7 +4,8 @@ import SwiftUI
 /// transaction (inert this feature); the generation engine is a later feature.
 struct RecurringSheet: View {
     @Binding var recurrence: RecurrenceInterval
-    var onDismiss: () -> Void
+
+    @Environment(\.blurPopupClose) private var close
 
     private let options: [(value: RecurrenceInterval, title: String, subtitle: String)] = [
         (.none, "One-time", "Doesn't repeat"),
@@ -16,9 +17,6 @@ struct RecurringSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Capsule().fill(Palette.ink.opacity(0.15))
-                .frame(width: 38, height: 5)
-                .frame(maxWidth: .infinity)
             Text("Repeat")
                 .font(.system(size: 18, weight: .bold))
                 .foregroundStyle(Palette.ink)
@@ -29,13 +27,11 @@ struct RecurringSheet: View {
             ForEach(options, id: \.value) { option in
                 Button {
                     recurrence = option.value
-                    onDismiss()
+                    close()
                 } label: { row(option) }
             }
-            Spacer(minLength: 0)
         }
         .padding(18)
-        .presentationDetents([.medium, .large])
     }
 
     private func row(_ option: (value: RecurrenceInterval, title: String, subtitle: String)) -> some View {

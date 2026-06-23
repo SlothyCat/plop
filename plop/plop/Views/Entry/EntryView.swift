@@ -47,8 +47,8 @@ struct EntryView: View {
         .blurPopup(isPresented: $whenOpen) {
             WhenSheet(date: $date)
         }
-        .sheet(isPresented: $recurOpen) {
-            RecurringSheet(recurrence: $recurrence) { recurOpen = false }
+        .blurPopup(isPresented: $recurOpen) {
+            RecurringSheet(recurrence: $recurrence)
         }
         .confirmationDialog("Recurring payment", isPresented: $showingRecurringConfirm,
                             titleVisibility: .visible) {
