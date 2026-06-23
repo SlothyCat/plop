@@ -44,7 +44,7 @@ struct EntryView: View {
         .blurPopup(isPresented: $showingNewCategory) {
             CategoryFormView(onSave: { selected = $0 })
         }
-        .sheet(isPresented: $whenOpen) {
+        .blurPopup(isPresented: $whenOpen) {
             WhenSheet(date: $date)
         }
         .sheet(isPresented: $recurOpen) {
