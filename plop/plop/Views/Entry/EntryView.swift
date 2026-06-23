@@ -36,9 +36,8 @@ struct EntryView: View {
             keypad
         }
         .background(Palette.bg.ignoresSafeArea())
-        .sheet(isPresented: $pickerOpen) {
+        .blurPopup(isPresented: $pickerOpen, tall: true) {
             CategoryPickerSheet(categories: categories, selected: $selected,
-                                onDismiss: { pickerOpen = false },
                                 onAddNew: { pickerOpen = false; showingNewCategory = true })
         }
         .blurPopup(isPresented: $showingNewCategory) {
