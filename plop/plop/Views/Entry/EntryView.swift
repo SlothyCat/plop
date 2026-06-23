@@ -36,19 +36,18 @@ struct EntryView: View {
             keypad
         }
         .background(Palette.bg.ignoresSafeArea())
-        .sheet(isPresented: $pickerOpen) {
+        .blurPopup(isPresented: $pickerOpen, tall: true) {
             CategoryPickerSheet(categories: categories, selected: $selected,
-                                onDismiss: { pickerOpen = false },
                                 onAddNew: { pickerOpen = false; showingNewCategory = true })
         }
-        .sheet(isPresented: $showingNewCategory) {
+        .blurPopup(isPresented: $showingNewCategory) {
             CategoryFormView(onSave: { selected = $0 })
         }
-        .sheet(isPresented: $whenOpen) {
+        .blurPopup(isPresented: $whenOpen) {
             WhenSheet(date: $date)
         }
-        .sheet(isPresented: $recurOpen) {
-            RecurringSheet(recurrence: $recurrence) { recurOpen = false }
+        .blurPopup(isPresented: $recurOpen) {
+            RecurringSheet(recurrence: $recurrence)
         }
         .confirmationDialog("Recurring payment", isPresented: $showingRecurringConfirm,
                             titleVisibility: .visible) {

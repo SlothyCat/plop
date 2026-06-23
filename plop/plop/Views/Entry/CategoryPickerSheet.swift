@@ -6,32 +6,42 @@ import SwiftData
 struct CategoryPickerSheet: View {
     let categories: [ExpenseCategory]
     @Binding var selected: ExpenseCategory?
-    var onDismiss: () -> Void
     var onAddNew: () -> Void
+
+    @Environment(\.blurPopupClose) private var close
+    @Environment(\.blurPopupMaxHeight) private var maxHeight
+    @State private var gridHeight: CGFloat = 0
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 2)
 
+    private var scrollCap: CGFloat {
+        let ceiling = maxHeight.isFinite ? maxHeight * 0.7 : 100_000
+        return gridHeight == 0 ? ceiling : min(gridHeight, ceiling)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            grabber
             Text("Choose category")
                 .font(.system(size: 18, weight: .bold))
                 .foregroundStyle(Palette.ink)
 
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(categories) { category in
-                    Button {
-                        selected = category
-                        onDismiss()
-                    } label: { tile(category) }
-                    .accessibilityIdentifier("category-\(category.name)")
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 10) {
+                    ForEach(categories) { category in
+                        Button {
+                            selected = category
+                            close()
+                        } label: { tile(category) }
+                        .accessibilityIdentifier("category-\(category.name)")
+                    }
                 }
+                .readHeight(into: $gridHeight)
             }
+            .frame(maxHeight: scrollCap)
+
             newCategoryButton
-            Spacer(minLength: 0)
         }
         .padding(18)
-        .presentationDetents([.medium, .large])
     }
 
     private var newCategoryButton: some View {
@@ -70,9 +80,4 @@ struct CategoryPickerSheet: View {
         )
     }
 
-    private var grabber: some View {
-        Capsule().fill(Palette.ink.opacity(0.15))
-            .frame(width: 38, height: 5)
-            .frame(maxWidth: .infinity)
-    }
 }
