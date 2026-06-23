@@ -36,8 +36,8 @@ struct InsightsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Palette.bg)
-        .sheet(item: $editing) { cat in
-            CategoryBudgetSheet(category: cat) { editing = nil }
+        .blurPopup(item: $editing) { cat in
+            CategoryBudgetSheet(category: cat)
         }
     }
 

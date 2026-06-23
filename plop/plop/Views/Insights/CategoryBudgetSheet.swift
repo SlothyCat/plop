@@ -5,8 +5,8 @@ import SwiftData
 /// Writes ExpenseCategory.budget; empty field clears the budget (0).
 struct CategoryBudgetSheet: View {
     let category: ExpenseCategory
-    var onDone: () -> Void
 
+    @Environment(\.blurPopupClose) private var close
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @State private var field = ""
 
@@ -44,27 +44,16 @@ struct CategoryBudgetSheet: View {
             .background(Palette.field, in: RoundedRectangle(cornerRadius: 14))
             .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.ink12, lineWidth: 1))
 
-            VStack(spacing: 8) {
-                Button { save() } label: {
-                    Text("Save budget").frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(Palette.accent)
-                Button("Cancel") { onDone() }
-                    .foregroundStyle(Palette.ink60)
-            }
-
-            Spacer()
+            Button { save() } label: { Text("Save budget") }
+                .buttonStyle(PopupPrimaryButton())
         }
         .padding(20)
-        .background(Palette.bg)
         .onAppear { field = formatBudgetAmount(category.budget) }
-        .presentationDetents([.medium])
     }
 
     private func save() {
         category.budget = parseBudgetAmount(field)
-        onDone()
+        close()
     }
 }
 
@@ -72,7 +61,6 @@ struct CategoryBudgetSheet: View {
 #Preview {
     CategoryBudgetSheet(
         category: ExpenseCategory(name: "Food", symbolName: "fork.knife",
-                                  colorHex: "#FFEBCC", budget: 300),
-        onDone: {})
+                                  colorHex: "#FFEBCC", budget: 300))
 }
 #endif
