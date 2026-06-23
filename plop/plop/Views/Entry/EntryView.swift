@@ -41,7 +41,7 @@ struct EntryView: View {
                                 onDismiss: { pickerOpen = false },
                                 onAddNew: { pickerOpen = false; showingNewCategory = true })
         }
-        .sheet(isPresented: $showingNewCategory) {
+        .blurPopup(isPresented: $showingNewCategory) {
             CategoryFormView(onSave: { selected = $0 })
         }
         .sheet(isPresented: $whenOpen) {
