@@ -25,6 +25,7 @@ struct EntryView: View {
     @State private var recurOpen = false
     @State private var showingNewCategory = false
     @State private var showingRecurringConfirm = false
+    @State private var showValidationErrors = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -93,7 +94,14 @@ struct EntryView: View {
                 Text(input.display())
                     .font(.system(size: 66, weight: .semibold))
                     .monospacedDigit()
-                    .foregroundStyle(Palette.ink)
+                    .foregroundStyle(amountInvalid ? Palette.danger : Palette.ink)
+            }
+
+            if let message = validationCaption {
+                Text(message)
+                    .font(.system(size: 13.5, weight: .medium))
+                    .foregroundStyle(Palette.danger)
+                    .multilineTextAlignment(.center)
             }
 
             ZStack {
@@ -160,11 +168,13 @@ struct EntryView: View {
                         .frame(maxWidth: 90)
                 }
                 .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(selected != nil ? Palette.tileInk : Palette.ink60)
+                .foregroundStyle(categoryInvalid ? Palette.danger
+                                 : (selected != nil ? Palette.tileInk : Palette.ink60))
                 .padding(.vertical, 11)
                 .padding(.horizontal, 14)
                 .background(selected.map { Color(hex: $0.colorHex) } ?? Palette.card, in: Capsule())
-                .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
+                .overlay(Capsule().stroke(categoryInvalid ? Palette.danger : Palette.ink12,
+                                          lineWidth: categoryInvalid ? 1.5 : 1))
             }
             .accessibilityIdentifier("categoryButton")
         }
@@ -175,7 +185,7 @@ struct EntryView: View {
     // MARK: keypad
 
     private var keypad: some View {
-        Keypad(onKey: { input.press($0) }, onConfirm: confirm, canConfirm: canSave)
+        Keypad(onKey: { input.press($0) }, onConfirm: confirm)
             .padding(.horizontal, 18)
             .padding(.bottom, 30)
     }
@@ -184,9 +194,19 @@ struct EntryView: View {
 
     /// A transaction needs a positive amount AND a category.
     private var canSave: Bool { input.canSave && selected != nil }
+    private var amountInvalid: Bool { showValidationErrors && !input.canSave }
+    private var categoryInvalid: Bool { showValidationErrors && selected == nil }
+    private var validationCaption: String? {
+        guard showValidationErrors else { return nil }
+        return entryValidationMessage(hasAmount: input.canSave, hasCategory: selected != nil)
+    }
 
     private func confirm() {
-        guard canSave else { return }
+        guard canSave else {
+            showValidationErrors = true
+            Haptics.error()
+            return
+        }
         if editing == nil && recurrence != .none {
             showingRecurringConfirm = true
         } else {
