@@ -19,7 +19,10 @@ struct CurrencyView: View {
             ScrollView {
                 LazyVStack(spacing: 10) {
                     ForEach(currencyChoices, id: \.self) { code in
-                        Button { currencyCode = code } label: { row(code) }
+                        Button {
+                            if code != currencyCode { Haptics.success() }
+                            currencyCode = code
+                        } label: { row(code) }
                             .buttonStyle(.plain)
                     }
                 }

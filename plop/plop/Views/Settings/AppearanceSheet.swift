@@ -33,7 +33,10 @@ struct AppearanceSheet: View {
 
     private func card(_ mode: ThemeMode) -> some View {
         let on = mode == selected
-        return Button { themeModeRaw = mode.rawValue } label: {
+        return Button {
+            if mode.rawValue != themeModeRaw { Haptics.success() }
+            themeModeRaw = mode.rawValue
+        } label: {
             HStack(spacing: 14) {
                 Image(systemName: mode.symbol)
                     .font(.system(size: 18))

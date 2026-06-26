@@ -235,6 +235,7 @@ struct CategoryFormView: View {
             let created = CategoryActions.add(draft, in: modelContext)
             onSave?(created)
         }
+        Haptics.success()
         close()
     }
 

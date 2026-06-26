@@ -27,6 +27,7 @@ struct RecurringSheet: View {
             ForEach(options, id: \.value) { option in
                 Button {
                     recurrence = option.value
+                    Haptics.success()
                     close()
                 } label: { row(option) }
             }

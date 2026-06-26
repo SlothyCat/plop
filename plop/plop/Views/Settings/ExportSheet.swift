@@ -27,6 +27,9 @@ struct ExportSheet: View {
         content
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .onChange(of: service.phase) { _, phase in
+                if case .success = phase { Haptics.success() }
+            }
     }
 
     @ViewBuilder private var content: some View {

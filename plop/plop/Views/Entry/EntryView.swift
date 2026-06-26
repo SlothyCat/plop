@@ -205,6 +205,7 @@ struct EntryView: View {
         } else {
             TransactionActions.add(draft, in: modelContext)
         }
+        Haptics.success()
         dismiss()
     }
 

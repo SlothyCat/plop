@@ -37,6 +37,7 @@ struct RecurringRulesSheet: View {
                             presenting: pendingCancel) { rule in
             Button("Stop recurring", role: .destructive) {
                 RecurringActions.cancel(rule, in: modelContext)
+                Haptics.success()
                 pendingCancel = nil
             }
             Button("Keep", role: .cancel) { pendingCancel = nil }
