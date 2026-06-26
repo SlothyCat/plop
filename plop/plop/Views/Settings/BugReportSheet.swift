@@ -24,7 +24,8 @@ struct BugReportSheet: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .sheet(isPresented: $showingMail) {
                 MailComposeView(subject: BugReport.subject, body: composedBody(),
-                                imageData: imageData) { _ in
+                                imageData: imageData) { result in
+                    if result == .sent { Haptics.success() }
                     showingMail = false
                     close()
                 }
