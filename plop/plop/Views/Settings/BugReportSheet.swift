@@ -13,10 +13,13 @@ struct BugReportSheet: View {
     @State private var imageData: Data?
     @State private var showingMail = false
     @State private var showFallback = false
+    @State private var showValidationErrors = false
 
     private var canSend: Bool {
         !description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
+
+    private var descriptionInvalid: Bool { showValidationErrors && !canSend }
 
     var body: some View {
         content
@@ -61,15 +64,22 @@ struct BugReportSheet: View {
                     .padding(.horizontal, 8).padding(.vertical, 2)
             }
             .background(Palette.field, in: RoundedRectangle(cornerRadius: 13))
-            .overlay(RoundedRectangle(cornerRadius: 13).stroke(Palette.ink12, lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 13)
+                .stroke(descriptionInvalid ? Palette.danger : Palette.ink12,
+                        lineWidth: descriptionInvalid ? 1.5 : 1))
+            if descriptionInvalid {
+                Text("Add a description first.")
+                    .font(.system(size: 13)).foregroundStyle(Palette.danger)
+            }
 
             label("SCREENSHOT · OPTIONAL")
             screenshotRow
 
             VStack(spacing: 8) {
-                Button { send() } label: { Text("Send") }
-                    .buttonStyle(PopupPrimaryButton(enabled: canSend))
-                    .disabled(!canSend)
+                Button {
+                    if canSend { send() } else { showValidationErrors = true; Haptics.error() }
+                } label: { Text("Send") }
+                    .buttonStyle(PopupPrimaryButton())
             }
         }
     }
