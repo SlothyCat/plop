@@ -27,4 +27,17 @@ final class CategoryValidationTests: XCTestCase {
         let food = cat("Food"); let transport = cat("Transport")
         XCTAssertFalse(isCategoryNameAvailable("Food", existing: [food, transport], editing: transport))
     }
+
+    func test_message_nilWhenAvailable() {
+        XCTAssertNil(categoryNameMessage(name: "Transport", isAvailable: true))
+    }
+
+    func test_message_emptyName() {
+        XCTAssertEqual(categoryNameMessage(name: "  ", isAvailable: false), "Enter a name.")
+    }
+
+    func test_message_duplicateName() {
+        XCTAssertEqual(categoryNameMessage(name: "Food", isAvailable: false),
+                       "That name's already taken.")
+    }
 }

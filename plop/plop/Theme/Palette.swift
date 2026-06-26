@@ -20,6 +20,7 @@ enum Palette {
     static let yellow = Color(hex: "#FFF9D2")
     static let tileInk = Color(hex: "#2A2A2A")     // glyph on fixed pastel tiles
     static let incomeGreen = Color.dynamic(Color(hex: "#1F8A5B"), Color(hex: "#4ECB8B"))
+    static let danger = Color.dynamic(Color(hex: "#C0392B"), Color(hex: "#FF6B5E"))
 
     private static func charcoal(_ opacity: Double) -> Color {
         Color(.sRGB, white: 0x2A / 255, opacity: opacity)
