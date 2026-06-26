@@ -12,3 +12,11 @@ func isCategoryNameAvailable(_ name: String,
         return other.name.caseInsensitiveCompare(trimmed) == .orderedSame
     }
 }
+
+/// The caption shown when a category name can't be saved, or nil when it's valid.
+/// `isAvailable` is the `isCategoryNameAvailable(...)` result for the same name.
+func categoryNameMessage(name: String, isAvailable: Bool) -> String? {
+    if isAvailable { return nil }
+    let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+    return trimmed.isEmpty ? "Enter a name." : "That name's already taken."
+}

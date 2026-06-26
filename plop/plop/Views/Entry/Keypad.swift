@@ -4,7 +4,6 @@ import SwiftUI
 struct Keypad: View {
     var onKey: (String) -> Void
     var onConfirm: () -> Void
-    var canConfirm: Bool
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 3)
 
@@ -41,9 +40,7 @@ struct Keypad: View {
                 .frame(height: 62)
                 .background(Palette.accent, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 .foregroundStyle(Palette.tileInk)
-                .opacity(canConfirm ? 1 : 0.4)
         }
-        .disabled(!canConfirm)
         .accessibilityIdentifier("key-confirm")
     }
 }

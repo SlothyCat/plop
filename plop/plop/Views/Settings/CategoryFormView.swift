@@ -18,6 +18,7 @@ struct CategoryFormView: View {
     @State private var iconType: IconType = .glyph
     @State private var colorHex = "#8CC0EB"
     @State private var budgetField = ""
+    @State private var showValidationErrors = false
 
     private enum IconType { case glyph, emoji }
 
@@ -50,11 +51,20 @@ struct CategoryFormView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             field("NAME") {
-                TextField("e.g. Transport", text: $name)
-                    .font(.system(size: 16)).foregroundStyle(Palette.ink)
-                    .padding(.horizontal, 14).padding(.vertical, 12)
-                    .background(Palette.field, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 13).stroke(Palette.ink12, lineWidth: 1))
+                VStack(alignment: .leading, spacing: 6) {
+                    TextField("e.g. Transport", text: $name)
+                        .font(.system(size: 16)).foregroundStyle(Palette.ink)
+                        .padding(.horizontal, 14).padding(.vertical, 12)
+                        .background(Palette.field, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 13)
+                            .stroke(nameInvalid ? Palette.danger : Palette.ink12,
+                                    lineWidth: nameInvalid ? 1.5 : 1))
+                    if showValidationErrors,
+                       let message = categoryNameMessage(name: name, isAvailable: canSave) {
+                        Text(message)
+                            .font(.system(size: 13)).foregroundStyle(Palette.danger)
+                    }
+                }
             }
             VStack(alignment: .leading, spacing: 7) {
                 HStack {
@@ -78,10 +88,12 @@ struct CategoryFormView: View {
             }
             field("MONTHLY BUDGET · OPTIONAL") { budgetFieldView }
             VStack(spacing: 4) {
-                Button { save() } label: {
+                Button {
+                    if canSave { save() } else { showValidationErrors = true; Haptics.error() }
+                } label: {
                     Text("Save")
                 }
-                .buttonStyle(PopupPrimaryButton(enabled: canSave)).disabled(!canSave)
+                .buttonStyle(PopupPrimaryButton())
             }
             .padding(.top, 2)
         }
@@ -217,6 +229,8 @@ struct CategoryFormView: View {
     private var colorBinding: Binding<Color> {
         Binding(get: { Color(hex: colorHex) }, set: { colorHex = $0.toHex() })
     }
+
+    private var nameInvalid: Bool { showValidationErrors && !canSave }
 
     private var canSave: Bool {
         isCategoryNameAvailable(name, existing: existing, editing: editing)

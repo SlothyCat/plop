@@ -77,7 +77,7 @@ struct ExportSheet: View {
             }
             if emptyNotice {
                 Text("No transactions in this range.")
-                    .font(.system(size: 13.5)).foregroundStyle(Palette.ink60)
+                    .font(.system(size: 13.5)).foregroundStyle(Palette.danger)
             }
 
             VStack(spacing: 8) {
@@ -123,7 +123,7 @@ struct ExportSheet: View {
             options: ExportOptions(range: range,
                                    budgetMode: BudgetMode(rawValue: budgetModeRaw) ?? .category,
                                    generalBudget: generalBudget, currencyCode: currencyCode))
-        guard !sheets.isEmpty else { emptyNotice = true; return }
+        guard !sheets.isEmpty else { emptyNotice = true; Haptics.error(); return }
         await service.run(monthSheets: sheets)
     }
 }
