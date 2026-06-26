@@ -53,6 +53,7 @@ struct CategoryBudgetSheet: View {
 
     private func save() {
         category.budget = parseBudgetAmount(field)
+        Haptics.success()
         close()
     }
 }

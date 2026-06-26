@@ -53,7 +53,7 @@ struct BudgetView: View {
             }
 
             VStack(spacing: 4) {
-                Button { save(); close() } label: {
+                Button { save(); Haptics.success(); close() } label: {
                     Text("Save budget")
                 }
                 .buttonStyle(PopupPrimaryButton())
