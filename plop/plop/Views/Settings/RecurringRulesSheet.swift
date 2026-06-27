@@ -10,6 +10,7 @@ struct RecurringRulesSheet: View {
     @Environment(\.blurPopupMaxHeight) private var maxHeight
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
     @State private var pendingCancel: RecurringRule?
+    @State private var addingRecurring = false
     @State private var listHeight: CGFloat = 0
 
     private var scrollCap: CGFloat {
@@ -30,6 +31,10 @@ struct RecurringRulesSheet: View {
                 }
                 .frame(maxHeight: scrollCap)
             }
+            addButton
+        }
+        .fullScreenCover(isPresented: $addingRecurring) {
+            EntryView(initialRecurrence: .monthly)
         }
         .confirmationDialog("Stop this recurring payment?",
                             isPresented: cancelDialogBinding,
@@ -56,6 +61,19 @@ struct RecurringRulesSheet: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, 20).padding(.top, 22).padding(.bottom, 12)
+    }
+
+    private var addButton: some View {
+        Button { addingRecurring = true } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "plus").font(.system(size: 17, weight: .semibold))
+                Text("Add recurring payment").font(.system(size: 17, weight: .semibold))
+            }
+            .foregroundStyle(Palette.tileInk).frame(maxWidth: .infinity).padding(.vertical, 15)
+            .background(Palette.accent, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 18)
     }
 
     private func row(_ rule: RecurringRule) -> some View {
