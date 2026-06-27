@@ -61,6 +61,7 @@ struct BudgetView: View {
             .padding(.top, 2)
         }
         .padding(.horizontal, 20).padding(.top, 22).padding(.bottom, 18)
+        .dismissKeyboardOnTap()
         .onAppear(perform: loadFields)
     }
 
