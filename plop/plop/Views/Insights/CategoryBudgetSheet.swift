@@ -48,6 +48,7 @@ struct CategoryBudgetSheet: View {
                 .buttonStyle(PopupPrimaryButton())
         }
         .padding(20)
+        .dismissKeyboardOnTap()
         .onAppear { field = formatBudgetAmount(category.budget) }
     }
 

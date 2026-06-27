@@ -4,18 +4,24 @@ import SwiftUI
 struct SpendLegend: View {
     let spend: [CategorySpend]
     let total: Decimal
+    var categories: [ExpenseCategory] = []
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
+
+    private var lookup: [String: ExpenseCategory] {
+        Dictionary(categories.map { ($0.name, $0) }, uniquingKeysWith: { a, _ in a })
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             ForEach(Array(spend.enumerated()), id: \.element.id) { index, item in
                 if index > 0 {
-                    Rectangle().fill(Palette.hair).frame(height: 1).padding(.leading, 26)
+                    Rectangle().fill(Palette.hair).frame(height: 1).padding(.leading, 44)
                 }
                 HStack(spacing: 14) {
-                    RoundedRectangle(cornerRadius: 5)
-                        .fill(Color(hex: item.colorHex))
-                        .frame(width: 14, height: 14)
+                    CategoryIconView(category: lookup[item.id], fallbackSymbol: "tray")
+                        .font(.system(size: 15)).foregroundStyle(Palette.tileInk)
+                        .frame(width: 30, height: 30)
+                        .background(Color(hex: item.colorHex), in: RoundedRectangle(cornerRadius: 9))
                     Text(item.name)
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(Palette.ink)
