@@ -6,14 +6,19 @@ struct BudgetLegend: View {
     let summary: BudgetSummary
     let flavour: BudgetMode
     var onEdit: (CategoryBudgetProgress) -> Void = { _ in }
+    var categories: [ExpenseCategory] = []
 
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
+
+    private var lookup: [String: ExpenseCategory] {
+        Dictionary(categories.map { ($0.name, $0) }, uniquingKeysWith: { a, _ in a })
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             ForEach(Array(summary.rows.enumerated()), id: \.element.id) { index, row in
                 if index > 0 {
-                    Rectangle().fill(Palette.hair).frame(height: 1).padding(.leading, 26)
+                    Rectangle().fill(Palette.hair).frame(height: 1).padding(.leading, 44)
                 }
                 rowButton(row)
             }
@@ -33,9 +38,10 @@ struct BudgetLegend: View {
     private func rowBody(_ row: CategoryBudgetProgress) -> some View {
         VStack(spacing: 8) {
             HStack(spacing: 14) {
-                RoundedRectangle(cornerRadius: 5)
-                    .fill(Color(hex: row.colorHex))
-                    .frame(width: 14, height: 14)
+                CategoryIconView(category: lookup[row.id], fallbackSymbol: "tray")
+                    .font(.system(size: 15)).foregroundStyle(Palette.tileInk)
+                    .frame(width: 30, height: 30)
+                    .background(Color(hex: row.colorHex), in: RoundedRectangle(cornerRadius: 9))
                 Text(row.name)
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(Palette.ink)

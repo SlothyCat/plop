@@ -90,7 +90,7 @@ struct InsightsView: View {
                 .foregroundStyle(Palette.ink40)
                 .padding(.top, sectionGap)
         } else {
-            SpendLegend(spend: spend, total: total)
+            SpendLegend(spend: spend, total: total, categories: categories)
                 .padding(.horizontal, 18)
                 .padding(.top, sectionGap)
         }
@@ -117,7 +117,7 @@ struct InsightsView: View {
                 .padding(.horizontal, 30)
                 .padding(.top, sectionGap)
             if budgetFlavour == .category && !summary.rows.isEmpty {
-                BudgetLegend(summary: summary, flavour: budgetFlavour, onEdit: edit)
+                BudgetLegend(summary: summary, flavour: budgetFlavour, onEdit: edit, categories: categories)
                     .padding(.horizontal, 18)
                     .padding(.top, 18)
             }
@@ -127,7 +127,7 @@ struct InsightsView: View {
                 .foregroundStyle(Palette.ink40)
                 .padding(.top, sectionGap)
                 .padding(.bottom, 6)
-            BudgetLegend(summary: summary, flavour: budgetFlavour, onEdit: edit)
+            BudgetLegend(summary: summary, flavour: budgetFlavour, onEdit: edit, categories: categories)
                 .padding(.horizontal, 18)
         }
     }
