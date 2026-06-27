@@ -6,6 +6,7 @@ import SwiftData
 /// add flow is presented for now.
 struct EntryView: View {
     var editing: Transaction?
+    var initialRecurrence: RecurrenceInterval = .none
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -232,6 +233,7 @@ struct EntryView: View {
     private func prefillIfEditing() {
         guard let tx = editing else {
             input = AmountInput(maxFractionDigits: currencyFractionDigits(currencyCode: currencyCode))
+            recurrence = initialRecurrence
             return
         }
         mode = tx.type
