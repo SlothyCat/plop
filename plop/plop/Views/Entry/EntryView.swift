@@ -74,6 +74,7 @@ struct EntryView: View {
                 if let tx = editing {
                     circleButton("trash", danger: true) {
                         TransactionActions.delete(tx, in: modelContext)
+                        Haptics.success()
                         dismiss()
                     }
                 }
