@@ -183,3 +183,7 @@ categories as slivers (light + dark).
 
 `minArcAdjusted` + `minArc` on the two donut functions + tests. One PR on
 `feature/donut-min-arc`. No rendering/UI change.
+
+:::voice[Reflection]
+_The donut's tiny-slice / clipped-ring saga — what did chasing those bugs teach you?_
+:::
