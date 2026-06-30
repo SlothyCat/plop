@@ -28,3 +28,13 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* "From the author" personal-voice callout */
+.theme-admonition-voice {
+  border-left: 4px solid #8CC0EB;
+  background: rgba(140, 192, 235, 0.10);
+}
+.theme-admonition-voice .admonition-heading {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
