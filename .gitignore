@@ -78,3 +78,8 @@ fastlane/test_output
 ## Secrets — real OAuth config (commit only Secrets.example.xcconfig)
 ## ---------------------------------------------------------------------------
 Secrets.xcconfig
+
+# Docusaurus
+website/node_modules
+website/build
+website/.docusaurus
