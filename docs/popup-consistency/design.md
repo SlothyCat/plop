@@ -97,3 +97,7 @@ and opens the New-category popup, which stacks).
 PR1: `InsightsView` + `CategoryBudgetSheet`. PR2: `EntryView` + `CategoryPickerSheet` /
 `WhenSheet` / `RecurringSheet` (CategoryFormView unchanged). Two PRs on
 `feature/insights-budget-popup` then a PR2 branch.
+
+:::voice[Reflection]
+_Standardising every popup onto BlurPopup — was the consistency worth the churn?_
+:::

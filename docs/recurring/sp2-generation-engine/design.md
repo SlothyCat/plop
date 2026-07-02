@@ -115,3 +115,7 @@ are no-ops thanks to idempotency. No `BGTaskScheduler`, no server.
 No UI; SP3 adds rule creation from Entry (+ disclosure, global default day); SP4 adds
 manage/stop and edit-one-vs-series. SP2 only makes existing active rules produce
 transactions on open.
+
+:::voice[Reflection]
+_The generation engine was the trickiest logic in the app. What made it hard, and how did you get it right?_
+:::
