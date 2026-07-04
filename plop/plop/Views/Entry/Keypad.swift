@@ -25,9 +25,9 @@ struct Keypad: View {
                 .monospacedDigit()
                 .frame(maxWidth: .infinity)
                 .frame(height: 62)
-                .background(Palette.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .background(Palette.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .foregroundStyle(Palette.ink)
-                .shadow(color: Palette.ink.opacity(0.05), radius: 2, y: 1)
+                .shadow(color: Color.black.opacity(0.12), radius: 4, y: 1)
         }
         .accessibilityIdentifier("key-\(label)")
     }
@@ -38,7 +38,7 @@ struct Keypad: View {
                 .font(.system(size: 28, weight: .bold))
                 .frame(maxWidth: .infinity)
                 .frame(height: 62)
-                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .background(Palette.accent, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .foregroundStyle(Palette.tileInk)
         }
         .accessibilityIdentifier("key-confirm")
