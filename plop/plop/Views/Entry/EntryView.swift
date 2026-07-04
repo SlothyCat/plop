@@ -31,11 +31,15 @@ struct EntryView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
-            Spacer()
-            amountArea
-            Spacer()
+            Spacer(minLength: 8)
+            RegisterDisplay(type: mode, currencySymbol: currencySymbol(currencyCode),
+                            amount: input.display(), category: selected,
+                            dateText: "\(dateLabel) · \(timeLabel)", amountInvalid: amountInvalid)
+            belowCard
+            Spacer(minLength: 8)
             detailPills
             keypad
+            footer
         }
         .background(Palette.bg.ignoresSafeArea())
         .blurPopup(isPresented: $pickerOpen, tall: true) {
@@ -85,40 +89,16 @@ struct EntryView: View {
         .padding(.top, 12)
     }
 
-    // MARK: amount
+    // MARK: below the register (caption, recurring, note)
 
-    private var amountArea: some View {
-        VStack(spacing: 18) {
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(currencySymbol(currencyCode))
-                    .font(.system(size: 40, weight: .medium))
-                    .foregroundStyle(Palette.ink40)
-                Text(input.display())
-                    .font(.system(size: 66, weight: .semibold))
-                    .monospacedDigit()
-                    .foregroundStyle(amountInvalid ? Palette.danger : Palette.ink)
-            }
-
+    private var belowCard: some View {
+        VStack(spacing: 12) {
             if let message = validationCaption {
                 Text(message)
                     .font(.system(size: 13.5, weight: .medium))
                     .foregroundStyle(Palette.danger)
                     .multilineTextAlignment(.center)
             }
-
-            ZStack {
-                notePill
-                HStack {
-                    Spacer()
-                    Button { input.backspace() } label: {
-                        Image(systemName: "delete.left")
-                            .font(.system(size: 22))
-                            .foregroundStyle(Palette.ink60)
-                    }
-                    .padding(.trailing, 24)
-                }
-            }
-
             if recurrence != .none {
                 Button { recurOpen = true } label: {
                     Label("Repeats \(recurringSummary(interval: recurrence, date: date))",
@@ -127,18 +107,44 @@ struct EntryView: View {
                         .foregroundStyle(Palette.ink60)
                 }
             }
+            noteRow
         }
+        .padding(.top, 14)
     }
 
-    private var notePill: some View {
-        TextField("Add Note", text: $note)
-            .multilineTextAlignment(.center)
-            .font(.system(size: 15))
-            .padding(.vertical, 9)
-            .padding(.horizontal, 16)
-            .background(Palette.card, in: Capsule())
-            .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
-            .frame(maxWidth: 180)
+    private var noteRow: some View {
+        HStack(spacing: 10) {
+            HStack(spacing: 8) {
+                Image(systemName: "line.3.horizontal").foregroundStyle(Palette.ink40)
+                TextField("Add Note", text: $note).font(.system(size: 15))
+            }
+            .padding(.vertical, 12).padding(.horizontal, 14)
+            .frame(maxWidth: .infinity)
+            .background(Palette.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.ink12, lineWidth: 1))
+
+            Button { input.backspace() } label: {
+                Image(systemName: "delete.left")
+                    .font(.system(size: 20)).foregroundStyle(Palette.ink60)
+                    .frame(width: 54, height: 48)
+                    .background(Palette.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.ink12, lineWidth: 1))
+            }
+        }
+        .padding(.horizontal, 18)
+    }
+
+    private var footer: some View {
+        HStack(spacing: 10) {
+            Rectangle().fill(Palette.ink12).frame(width: 40, height: 1)
+            HStack(spacing: 6) {
+                Text("Plop").font(.system(size: 13, weight: .bold)).foregroundStyle(Palette.ink60)
+                Text("CASHIER").font(.system(size: 13, weight: .semibold)).tracking(3)
+                    .foregroundStyle(Palette.ink40)
+            }
+            Rectangle().fill(Palette.ink12).frame(width: 40, height: 1)
+        }
+        .padding(.top, 10).padding(.bottom, 16)
     }
 
     // MARK: date + category pills
@@ -157,8 +163,8 @@ struct EntryView: View {
                 .padding(.vertical, 11)
                 .padding(.horizontal, 14)
                 .frame(maxWidth: .infinity)
-                .background(Palette.card, in: Capsule())
-                .overlay(Capsule().stroke(Palette.ink12, lineWidth: 1))
+                .background(Palette.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.ink12, lineWidth: 1))
             }
 
             Button { pickerOpen = true } label: {
@@ -174,9 +180,10 @@ struct EntryView: View {
                                  : (selected != nil ? Palette.tileInk : Palette.ink60))
                 .padding(.vertical, 11)
                 .padding(.horizontal, 14)
-                .background(selected.map { Color(hex: $0.colorHex) } ?? Palette.card, in: Capsule())
-                .overlay(Capsule().stroke(categoryInvalid ? Palette.danger : Palette.ink12,
-                                          lineWidth: categoryInvalid ? 1.5 : 1))
+                .background(selected.map { Color(hex: $0.colorHex) } ?? Palette.card,
+                            in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(categoryInvalid ? Palette.danger : Palette.ink12,
+                                                                   lineWidth: categoryInvalid ? 1.5 : 1))
             }
             .accessibilityIdentifier("categoryButton")
         }
