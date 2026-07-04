@@ -23,6 +23,9 @@ const config = {
           path: '../docs',
           routeBasePath: 'reference',
           sidebarPath: require.resolve('./sidebars.js'),
+          // The docs-site's own build plan is meta, not an app feature — keep it in the repo
+          // but hide it from the published Reference.
+          exclude: ['docs-site/**'],
           admonitions: { keywords: ['voice'], extendDefaults: true },
         },
         blog: false,
