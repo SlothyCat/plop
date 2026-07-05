@@ -4,37 +4,60 @@ sidebar_position: 2
 
 # Behind the Build
 
-plop was built as a portfolio piece for a disciplined, AI-assisted workflow: every feature went
+`plop` was built as a portfolio piece for a disciplined, AI-assisted workflow: every feature went
 through a written spec and plan before any code, one branch and PR per slice, with tests and lint
 gating `main`.
 
 ## The workflow
 
 :::voice[From the author]
-_How did the brainstorm → plan → approve → implement loop actually feel day to day? What made it
-work?_
+I started with writing down the User Stories, followed by the different functionalities. I decided
+to work on **`Swift`** to build an iOS app instead of React Native because of my previous course that made
+me more familiar with Swift.
+
+After deciding on the Tech Stack, I ideated what I wanted to see on my
+UI. I decided to give **Claude Design** a try. I sent my requirements to Claude to generate a good prompt
+and the results were unexpectedly well done!
+
+I installed the `superpowers` skill and started the workflow of *design → specs → implementation*. I built a
+roadmap at the beginning so that I do not lose sight of the goal and milestones.
 :::
 
 ## What worked
 
 :::voice[From the author]
-_Which parts of this approach paid off the most?_
+**Specs planning** allowed Claude to not lose context about what to do and everything was very hands off
+after reading the specs. Claude also provided a brief summary of what it had planned and confirmed multiple
+design choices with me before proceeding. This made the process a lot more thought through.
 :::
 
 ## What was hard
 
 :::voice[From the author]
-_Where did it get messy — a bug, a tooling fight, a decision you went back and forth on?_
+There were mainly two things that I found hard.
+
+The first was that it was not really able to follow UI descriptions well at first even though I have included
+the Claude Design handoff to it. I went to take screenshots and attached to the handoff which helped the accuracy
+of implementation.
+
+The second thing that I found hard was that it felt very easy to lose the context of the application for me, the human.
+The implementation was really fast and that reduced the time that I have spent with the code and thinking about it.
+This meant that I was unfamiliar with the implementation. Since this was supposed to be an experimental attempt, I
+allowed AI to implement all of the code ***without changing a single line myself***.
 :::
 
 ## What I'd change
 
 :::voice[From the author]
-_If you started over, what would you do differently?_
+I would try to include the roadmap into the CLAUDE.md file so that Claude updates it along the way and for me to take
+reference to. I would also maybe let Claude give me a non-technical and technical summary of what has been implemented,
+what a file was doing. I would also attach screenshots early on into the development so that I do not have to modify
+the UI again after the initial implementation.
 :::
 
 ## Advice to someone trying this
 
 :::voice[From the author]
-_Your one or two takeaways for working this way._
+Just do it! It is perfectly fine to give AI coding a try, as it might just be an **essential skill** that employers look out
+for right now! Build something on your own with AI now that it can greatly reduce your development time.
 :::
