@@ -204,7 +204,3 @@ row-tap → edit is wired in PR5. Every PR keeps `main` building and is independ
 
 - `design_handoff_plop/README.md` — full spec (tokens, screens, behavior).
 - `design_handoff_plop/app/{home,entry,store,theme}.jsx` — prototype source.
-
-:::voice[Reflection]
-_Choosing SwiftData over raw SQLite and modelling the data — what would you tell your past self?_
-:::

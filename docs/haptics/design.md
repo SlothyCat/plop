@@ -98,7 +98,3 @@ Small and cohesive — a **single PR** on `feature/haptics` off `main`:
 - Task 2: wire the synchronous sites (1–8).
 - Task 3: wire the async/state sites (9 Bug report `.sent`, 10 Export `.success`).
 - Task 4: verify (build, tests, lint) + device smoke check + PR.
-
-:::voice[Reflection]
-_Designing how the app should feel (success vs error haptics) — what surprised you?_
-:::
