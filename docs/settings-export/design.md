@@ -151,7 +151,3 @@ on failure the mapped message + Retry. Presented from a Settings **Export** row
   (folder/file ids, spreadsheet URL); `ExportError` mapping for 403/429/5xx/URLError.
 - **UI / live** (PR4): simulator + the test-user Google account — sign-in, create,
   re-export rewrite, open link, and an induced error (e.g. airplane mode → network).
-
-:::voice[Reflection]
-_Going stateless OAuth with PKCE and no Google SDK — why, and would you make the same call again?_
-:::
