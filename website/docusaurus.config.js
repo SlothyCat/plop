@@ -3,7 +3,7 @@
 const config = {
   title: 'plop',
   tagline: 'A local-first iOS expense tracker, built with a disciplined AI-assisted workflow.',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/plop-icon.svg',
   url: 'https://slothycat.github.io',
   baseUrl: '/plop/',
   organizationName: 'SlothyCat',
@@ -50,8 +50,16 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      image: 'img/plop_banner.png',
+      colorMode: {
+        defaultMode: 'dark',
+      },
       navbar: {
         title: 'plop',
+        logo: {
+          alt: 'plop logo',
+          src: 'img/plop-icon.svg',
+        },
         items: [
           { to: '/story/overview', label: 'The Story', position: 'left' },
           { to: '/reference/roadmap', label: 'Reference', position: 'left' },
