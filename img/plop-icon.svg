@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="plopBG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE9C2"></stop>
+      <stop offset="1" stop-color="#FFD98C"></stop>
+    </linearGradient>
+    <clipPath id="squircle">
+      <path d="M50 0 C12 0 0 12 0 50 C0 88 12 100 50 100 C88 100 100 88 100 50 C100 12 88 0 50 0 Z"></path>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#squircle)">
+    <rect width="100" height="100" fill="url(#plopBG)"></rect>
+    
+    <g fill="none" stroke="#E9B765" stroke-linecap="round">
+      <ellipse cx="50" cy="74" rx="24" ry="6.5" stroke-width="2.2" opacity="0.5"></ellipse>
+      <ellipse cx="50" cy="74" rx="14" ry="3.8" stroke-width="2.4" opacity="0.8"></ellipse>
+    </g>
+    
+    <text x="50" y="56" text-anchor="middle" font-family="&#39;Baloo 2&#39;, sans-serif" font-weight="800" font-size="40" fill="#5C9FD8" letter-spacing="-1">plop</text>
+  </g>
+</svg>
