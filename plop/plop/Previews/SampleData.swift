@@ -22,6 +22,31 @@ enum SampleData {
         }
     }
 
+    /// In-memory container seeded with many categories, to preview tall/scrolling popups
+    /// (e.g. the budget editor) where a long category list must stay usable.
+    @MainActor
+    static func manyCategoriesContainer() -> ModelContainer {
+        do {
+            let container = try ModelContainer(
+                for: Transaction.self, ExpenseCategory.self, RecurringRule.self,
+                configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            )
+            let names = ["Food", "Transport", "Shopping", "Bills", "Entertainment", "School",
+                         "Subscriptions", "Health", "Travel", "Gifts", "Groceries", "Rent",
+                         "Utilities", "Fitness", "Pets"]
+            let palette = ["#FFEBCC", "#BFDDF0", "#8CC0EB", "#FFF9D2"]
+            for (i, name) in names.enumerated() {
+                container.mainContext.insert(
+                    ExpenseCategory(name: name, symbolName: "tag.fill",
+                                    colorHex: palette[i % palette.count],
+                                    budget: Decimal(50 + i * 10)))
+            }
+            return container
+        } catch {
+            fatalError("Failed to build preview container: \(error)")
+        }
+    }
+
     static func categories() -> [ExpenseCategory] {
         [
             ExpenseCategory(name: "Food", symbolName: "fork.knife", colorHex: "#FFEBCC"),

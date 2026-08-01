@@ -5,6 +5,7 @@ import SwiftData
 struct BudgetView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.blurPopupClose) private var close
+    @Environment(\.blurPopupMaxHeight) private var maxHeight
     @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
 
     @AppStorage(currencyCodeKey) private var currencyCode = deviceCurrencyCode()
@@ -13,8 +14,16 @@ struct BudgetView: View {
 
     @State private var generalField = ""
     @State private var catFields: [PersistentIdentifier: String] = [:]
+    @State private var listHeight: CGFloat = 0
 
     private var mode: BudgetMode { BudgetMode(rawValue: modeRaw) ?? .category }
+
+    /// Cap the category list's scroll region so the header, total card and Save button stay
+    /// on-screen no matter how many categories exist. Hugs short lists; scrolls long ones.
+    private var scrollCap: CGFloat {
+        let ceiling = maxHeight.isFinite ? maxHeight * 0.5 : 100_000
+        return listHeight == 0 ? ceiling : min(listHeight, ceiling)
+    }
 
     private var subtitle: String {
         mode == .general
@@ -45,9 +54,13 @@ struct BudgetView: View {
                 }
             } else {
                 VStack(spacing: 12) {
-                    VStack(spacing: 8) {
-                        ForEach(categories) { cat in categoryRow(cat) }
+                    ScrollView {
+                        VStack(spacing: 8) {
+                            ForEach(categories) { cat in categoryRow(cat) }
+                        }
+                        .readHeight(into: $listHeight)
                     }
+                    .frame(maxHeight: scrollCap)
                     totalCard
                 }
             }
@@ -158,4 +171,12 @@ struct BudgetView: View {
 
 #if DEBUG
 #Preview { BudgetView().modelContainer(SampleData.previewContainer()) }
+
+// Many categories, presented tall exactly as the app does: the list scrolls while the
+// total card and Save button stay pinned and reachable.
+#Preview("Many categories") {
+    Color.clear
+        .blurPopup(isPresented: .constant(true), tall: true) { BudgetView() }
+        .modelContainer(SampleData.manyCategoriesContainer())
+}
 #endif
