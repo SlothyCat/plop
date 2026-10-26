@@ -15,7 +15,6 @@ struct ExportOptions {
     var budgetMode: BudgetMode
     var generalBudget: String
     var currencyCode: String
-    var now: Date = .now
     var calendar: Calendar = .current
 }
 
@@ -34,7 +33,7 @@ func buildExportSheets(transactions: [Transaction],
                        options: ExportOptions) -> [MonthSheet] {
     let calendar = options.calendar
     let inRange = transactions.filter {
-        options.range.contains($0.date, now: options.now, calendar: calendar)
+        options.range.contains($0.date, calendar: calendar)
     }
 
     var groups: [MonthKey: [Transaction]] = [:]

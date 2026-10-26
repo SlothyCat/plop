@@ -22,7 +22,7 @@ final class SheetBuilderTests: XCTestCase {
     private func options(_ range: ExportRange, mode: BudgetMode = .category,
                          general: String = "") -> ExportOptions {
         ExportOptions(range: range, budgetMode: mode, generalBudget: general,
-                      currencyCode: "USD", now: day(2026, 6, 15), calendar: utc)
+                      currencyCode: "USD", calendar: utc)
     }
 
     private func build(_ txs: [Transaction], _ cats: [ExpenseCategory],
@@ -88,7 +88,7 @@ final class SheetBuilderTests: XCTestCase {
         let sheets = build([
             tx(10, .expense, day(2026, 6, 4), category: food),
             tx(99, .expense, day(2026, 1, 4), category: food)
-        ], [food], range: .thisMonth)
+        ], [food], range: .month(day(2026, 6, 15)))
         XCTAssertEqual(sheets.map(\.tabTitle), ["2026-06"])
     }
 
