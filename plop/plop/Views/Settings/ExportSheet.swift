@@ -13,13 +13,14 @@ struct ExportSheet: View {
     @Environment(\.openURL) private var openURL
 
     @State private var service = ExportService.live()
-    @State private var rangeKind: RangeKind = .thisMonth
+    @State private var rangeKind: RangeKind = .month
+    @State private var month = Date.now
     @State private var from = Calendar.current.date(byAdding: .month, value: -1, to: .now) ?? .now
     @State private var to = Date.now
     @State private var emptyNotice = false
 
     private enum RangeKind: String, CaseIterable {
-        case thisMonth = "This month"
+        case month = "Month"
         case dateRange = "Date range"
     }
 
@@ -61,7 +62,9 @@ struct ExportSheet: View {
             }
             .pickerStyle(.segmented)
 
-            if rangeKind == .dateRange {
+            if rangeKind == .month {
+                monthStepper
+            } else {
                 HStack(spacing: 10) {
                     DatePicker("From", selection: $from, displayedComponents: .date)
                         .labelsHidden()
@@ -87,6 +90,42 @@ struct ExportSheet: View {
                 .buttonStyle(PopupPrimaryButton())
             }
         }
+    }
+
+    /// `‹ October 2026 ›` — steps the export month; can't go past the current month.
+    private var monthStepper: some View {
+        let atCurrent = Calendar.current.isDate(month, equalTo: .now, toGranularity: .month)
+        return HStack {
+            stepButton("chevron.left", label: "Previous month", enabled: true) {
+                month = shiftMonth(month, by: -1, calendar: .current)
+            }
+            Spacer()
+            Text(month.formatted(.dateTime.month(.wide).year()))
+                .font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.ink)
+                .contentTransition(.numericText())
+            Spacer()
+            stepButton("chevron.right", label: "Next month", enabled: !atCurrent) {
+                month = shiftMonth(month, by: 1, calendar: .current)
+            }
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 6)
+        .background(Palette.field, in: RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Palette.hair))
+        .animation(.snappy, value: month)
+    }
+
+    private func stepButton(_ symbol: String, label: String, enabled: Bool,
+                            action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 15, weight: .semibold))
+                .frame(width: 36, height: 36)
+                .contentShape(Rectangle())
+        }
+        .foregroundStyle(enabled ? Palette.accent : Palette.ink12)
+        .disabled(!enabled)
+        .accessibilityLabel(label)
     }
 
     private var phaseRunning: some View {
@@ -115,8 +154,8 @@ struct ExportSheet: View {
 
     private func runExport() async {
         emptyNotice = false
-        let range: ExportRange = rangeKind == .thisMonth
-            ? .thisMonth
+        let range: ExportRange = rangeKind == .month
+            ? .month(month)
             : .dateRange(min(from, to)...max(from, to))
         let sheets = buildExportSheets(
             transactions: transactions, categories: categories,
